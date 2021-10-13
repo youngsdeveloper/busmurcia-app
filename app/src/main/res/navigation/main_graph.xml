@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_graph"
+    app:startDestination="@id/placesFragment">
+
+    <fragment
+        android:id="@+id/placesFragment"
+        android:name="com.juice_studio.busmurciaapp.fragments.PlacesFragment"
+        android:label="fragment_places"
+        tools:layout="@layout/fragment_places" >
+        <action
+            android:id="@+id/action_placesFragment_to_placeFragment"
+            app:destination="@id/placeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/placeFragment"
+        android:name="com.juice_studio.busmurciaapp.fragments.PlaceFragment"
+        android:label="fragment_place"
+        tools:layout="@layout/fragment_place" />
+</navigation>
