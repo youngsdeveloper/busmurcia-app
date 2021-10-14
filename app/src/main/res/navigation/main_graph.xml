@@ -18,5 +18,20 @@
         android:id="@+id/placeFragment"
         android:name="com.juice_studio.busmurciaapp.fragments.PlaceFragment"
         android:label="fragment_place"
-        tools:layout="@layout/fragment_place" />
+        tools:layout="@layout/fragment_place" >
+        <argument android:name="place"
+            app:argType="com.juice_studio.busmurciaapp.models.Place" />
+        <action
+            android:id="@+id/action_placeFragment_to_routeFragment"
+            app:destination="@id/routeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/routeFragment"
+        android:name="com.juice_studio.busmurciaapp.fragments.RouteFragment"
+        android:label="fragment_route"
+        tools:layout="@layout/fragment_route" >
+        <argument
+            android:name="route"
+            app:argType="com.juice_studio.busmurciaapp.models.Route" />
+    </fragment>
 </navigation>
