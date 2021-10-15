@@ -10,7 +10,8 @@ data class Line(
     val route: Int,
     val synoptic: String,
     val headsign: String,
-    val hours: List<String>
+    val hours: List<String>,
+    val realtime: List<RealTimeHour>?
 ): Parcelable{
     fun getHumanLineName():String{
         return "$route$synoptic"

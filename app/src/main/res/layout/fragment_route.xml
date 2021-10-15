@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
+    tools:context=".fragments.RouteFragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".fragments.RouteFragment">
+    android:layout_height="match_parent">
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
 
     <TextView
         android:id="@+id/text_route_number"
@@ -45,15 +52,73 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_hours"
+        android:nestedScrollingEnabled="false"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/text_route_number"
+        app:layout_constraintTop_toBottomOf="@+id/label_horarios" />
+
+    <TextView
+        android:id="@+id/label_horarios"
+        style="@style/TextAppearance.MaterialComponents.Subtitle1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Horarios"
+        app:layout_constraintStart_toStartOf="@+id/text_route_headsign"
+        app:layout_constraintTop_toBottomOf="@+id/layout_next_bus" />
+
+
+    <Switch
+        android:id="@+id/switch_full_hours"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Horario completo"
+        app:layout_constraintBottom_toBottomOf="@+id/label_horarios"
+        app:layout_constraintEnd_toEndOf="@+id/recycler_hours"
+        app:layout_constraintTop_toTopOf="@+id/label_horarios" />
+
+
+    <TextView
+        android:id="@+id/label_next_bus"
+        style="@style/TextAppearance.MaterialComponents.Subtitle1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Próximo autobús"
+        app:layout_constraintStart_toStartOf="@+id/text_route_headsign"
         app:layout_constraintTop_toBottomOf="@+id/chip_group_synoptic" />
+
+    <LinearLayout
+        android:id="@+id/layout_next_bus"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:padding="10dp"
+        android:background="@drawable/background_next_bus"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/label_next_bus"
+        app:layout_constraintTop_toBottomOf="@+id/label_next_bus">
+
+        <TextView
+            android:id="@+id/text_next_bus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:text="TextView"
+            android:gravity="center_horizontal" />
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>
