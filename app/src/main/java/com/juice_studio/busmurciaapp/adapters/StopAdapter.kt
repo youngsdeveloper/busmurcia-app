@@ -21,7 +21,7 @@ class StopAdapter(var items: List<Stop>, var routeClickListener: RouteClickListe
         val stop = items[position]
         holder.text_parada.text = stop.name
 
-        val routeAdapter = RouteAdapter(stop.getRoutes(),routeClickListener)
+        val routeAdapter = RouteAdapter(stop.getRoutes(),stop, routeClickListener)
         holder.recycler_lines.adapter = routeAdapter
     }
 

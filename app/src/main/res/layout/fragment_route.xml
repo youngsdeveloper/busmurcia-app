@@ -103,19 +103,37 @@
         android:layout_marginRight="16dp"
         android:padding="10dp"
         android:background="@drawable/background_next_bus"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/label_next_bus"
         app:layout_constraintTop_toBottomOf="@+id/label_next_bus">
 
         <TextView
+            android:id="@+id/text_next_bus_line"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="textStart"
+            android:text="TextView"
+            android:gravity="start"
+            />
+
+        <TextView
             android:id="@+id/text_next_bus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textAlignment="center"
+            android:textAlignment="textStart"
             android:text="TextView"
-            android:gravity="center_horizontal" />
+            android:gravity="start"
+            />
+
+        <TextView
+            android:id="@+id/text_status_next_bus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="textStart"
+            android:text="TextView"
+            android:gravity="start"
+            />
     </LinearLayout>
 
 

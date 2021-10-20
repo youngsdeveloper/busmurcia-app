@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.item_line.view.*
 import kotlinx.android.synthetic.main.item_route.view.*
 import kotlinx.android.synthetic.main.item_stop.view.*
 
-class RouteAdapter(var items: List<Route>, var routeClickListener: RouteClickListener): RecyclerView.Adapter<RouteViewHolder>() {
+class RouteAdapter(var items: List<Route>, var stop: Stop, var routeClickListener: RouteClickListener): RecyclerView.Adapter<RouteViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RouteViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_route, parent, false)
@@ -25,7 +25,7 @@ class RouteAdapter(var items: List<Route>, var routeClickListener: RouteClickLis
         val route = items[position]
         holder.text_route.text = route.getRouteNameForHumans()
         holder.item_route_contaner.setOnClickListener {
-            routeClickListener.onRouteClick(route)
+            routeClickListener.onRouteClick(route, stop)
         }
 
     }
@@ -36,7 +36,7 @@ class RouteAdapter(var items: List<Route>, var routeClickListener: RouteClickLis
 
 
 interface RouteClickListener {
-    fun onRouteClick(route: Route)
+    fun onRouteClick(route: Route, stop: Stop)
 }
 
 

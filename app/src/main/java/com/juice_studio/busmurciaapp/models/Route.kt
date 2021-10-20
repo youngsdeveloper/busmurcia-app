@@ -57,8 +57,7 @@ data class Route(
     }
 
 
-    fun findNearestHour(synoptic:String):Hour?{
-        val current = Date()
+    fun findNearestHour(synoptic:String, timeBase: Date):Hour?{
         var hours = getLineHours()
         hours = hours.filter { h -> h.synoptic.equals(synoptic) }
 
@@ -66,7 +65,7 @@ data class Route(
         var min_hour: Hour? = null
 
         for(hour in hours){
-            val diff = abs(current.time - hour.date.time);
+            val diff = abs(timeBase.time - hour.date.time);
             if(min == null || diff<min){
                 min = diff
                 min_hour = hour

@@ -1,10 +1,14 @@
 package com.juice_studio.busmurciaapp.models
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class Stop(
     val id: Integer,
     val name: String,
     val lines: List<Line>
-){
+):Parcelable{
     fun getLinesByRoute():Map<Int, List<Line>>{
         return lines.groupBy { line -> line.route }
     }
