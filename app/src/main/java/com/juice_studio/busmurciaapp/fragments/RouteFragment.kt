@@ -3,12 +3,13 @@ package com.juice_studio.busmurciaapp.fragments
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
-import android.view.View
+import android.view.*
 import android.widget.CompoundButton
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +19,6 @@ import com.juice_studio.busmurciaapp.adapters.HourAdapter
 import com.juice_studio.busmurciaapp.io.ApiAdapter
 import com.juice_studio.busmurciaapp.models.Hour
 import com.juice_studio.busmurciaapp.models.RealTimeHour
-import kotlinx.android.synthetic.main.fragment_place.*
 import kotlinx.android.synthetic.main.fragment_route.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,6 +27,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+
 
 private const val SECONDS = 1000
 
@@ -45,7 +46,7 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
     private val updateRealtimeTask = object : Runnable {
         override fun run() {
             downloadLocalRealTimeData()
-            mainHandler.postDelayed(this, (5*SECONDS).toLong())
+            mainHandler.postDelayed(this, (5 * SECONDS).toLong())
         }
     }
 
@@ -53,7 +54,7 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
     private val updateRealtimeRemoteTask = object : Runnable {
         override fun run() {
             downloadRemotelRealTimeData()
-            mainHandler.postDelayed(this, (10*SECONDS).toLong())
+            mainHandler.postDelayed(this, (30 * SECONDS).toLong())
         }
     }
 
@@ -66,13 +67,35 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
         // Handler
         mainHandler = Handler(Looper.getMainLooper())
 
+
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater?.inflate(R.menu.menu_route, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        if(item.itemId==R.id.action_reload_route){
+            downloadRemotelRealTimeData()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
 
         val route = args.route
-
         text_route_number.text = "L${route.id}"
         text_route_headsign.text = "${route.getRouteHeadsign()}"
 
@@ -85,7 +108,11 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
         }
 
         for(synoptic in route.getSynopticInRoute()){
-            val chip = layoutInflater.inflate(R.layout.layout_chip_choice, chip_group_synoptic, false) as Chip
+            val chip = layoutInflater.inflate(
+                R.layout.layout_chip_choice,
+                chip_group_synoptic,
+                false
+            ) as Chip
             chip.text = "L${route.id} - ${synoptic}"
             chip.tag = synoptic
             chip.setOnCheckedChangeListener(onCheckedListener)
@@ -108,10 +135,10 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
         recycler_hours.adapter = hours_adapter
 
         GridLayoutManager(
-                requireContext(),
-                4,
-                RecyclerView.VERTICAL,
-                false
+            requireContext(),
+            4,
+            RecyclerView.VERTICAL,
+            false
         ).apply {
             recycler_hours.layoutManager = this
         }
@@ -220,9 +247,9 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
 
             if(min_realtime!!.isAdelantado()){
-                cal.add(Calendar.MINUTE,  min_realtime!!.delay_minutes.toInt() *(-1))
+                cal.add(Calendar.MINUTE, min_realtime!!.delay_minutes.toInt() * (-1))
             }else if(min_realtime!!.isRetrasado()){
-                cal.add(Calendar.MINUTE, min_realtime!!.delay_minutes.toInt() )
+                cal.add(Calendar.MINUTE, min_realtime!!.delay_minutes.toInt())
             }
 
             cal.set(Calendar.SECOND, 0) // Set seconds to 0
@@ -239,7 +266,10 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
 
             if(diffInMinutes>=1){
-                text_next_bus.text = text_next_bus.text.toString() + " (En " + diffInMinutes + pluralize(diffInMinutes.toInt(), " minuto") + ")"
+                text_next_bus.text = text_next_bus.text.toString() + " (En " + diffInMinutes + pluralize(
+                    diffInMinutes.toInt(),
+                    " minuto"
+                ) + ")"
             }
 
             //
@@ -247,23 +277,41 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
             if(min_realtime!!.real_time.matches(".*\\d.*".toRegex())){
                 if(min_realtime!!.isEnHora()){
                     text_status_next_bus.text = "En hora"
-                    text_status_next_bus.setTextColor(ContextCompat.getColor(requireContext(), R.color.green_success))
+                    text_status_next_bus.setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.green_success
+                        )
+                    )
                 }else{
-                    text_status_next_bus.text = min_realtime!!.delay_string.capitalize() + " " + min_realtime!!.delay_minutes + " " + pluralize(min_realtime!!.delay_minutes.toInt(), "minuto")
-                    text_status_next_bus.setTextColor(ContextCompat.getColor(requireContext(), R.color.red_danger))
+                    text_status_next_bus.text = min_realtime!!.delay_string.capitalize() + " " + min_realtime!!.delay_minutes + " " + pluralize(
+                        min_realtime!!.delay_minutes.toInt(),
+                        "minuto"
+                    )
+                    text_status_next_bus.setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.red_danger
+                        )
+                    )
                 }
                 text_next_bus.visibility = View.VISIBLE
 
             }else{
                 text_status_next_bus.text = min_realtime!!.real_time
-                text_status_next_bus.setTextColor(ContextCompat.getColor(requireContext(), R.color.green_success))
+                text_status_next_bus.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.green_success
+                    )
+                )
                 text_next_bus.visibility = View.GONE
             }
 
         }
     }
 
-    private fun pluralize(cant:Int, str:String):String{
+    private fun pluralize(cant: Int, str: String):String{
         if(cant>1){
             return str + "s"
         }

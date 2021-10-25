@@ -8,11 +8,14 @@
     <fragment
         android:id="@+id/placesFragment"
         android:name="com.juice_studio.busmurciaapp.fragments.PlacesFragment"
-        android:label="fragment_places"
+        android:label="Mis sitios guardados"
         tools:layout="@layout/fragment_places" >
         <action
             android:id="@+id/action_placesFragment_to_placeFragment"
             app:destination="@id/placeFragment" />
+        <action
+            android:id="@+id/action_placesFragment_to_newPlaceFragment"
+            app:destination="@id/newPlaceFragment" />
     </fragment>
     <fragment
         android:id="@+id/placeFragment"
@@ -28,13 +31,21 @@
     <fragment
         android:id="@+id/routeFragment"
         android:name="com.juice_studio.busmurciaapp.fragments.RouteFragment"
-        android:label="fragment_route"
+        android:label="Linea {route_title}"
         tools:layout="@layout/fragment_route" >
         <argument
             android:name="route"
             app:argType="com.juice_studio.busmurciaapp.models.Route" />
         <argument
+            android:name="route_title"
+            app:argType="string" />
+        <argument
             android:name="stop"
             app:argType="com.juice_studio.busmurciaapp.models.Stop" />
     </fragment>
+    <fragment
+        android:id="@+id/newPlaceFragment"
+        android:name="com.juice_studio.busmurciaapp.fragments.NewPlaceFragment"
+        android:label="Nuevo sitio"
+        tools:layout="@layout/fragment_new_place" />
 </navigation>

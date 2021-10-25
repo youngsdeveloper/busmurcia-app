@@ -22,9 +22,19 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.juice_studio.busmurciaapp.R
+import com.juice_studio.busmurciaapp.adapters.PlaceAdapter
+import com.juice_studio.busmurciaapp.adapters.PlaceClickListener
+import com.juice_studio.busmurciaapp.local.AppDatabase
+import com.juice_studio.busmurciaapp.local.toPlace
 import com.juice_studio.busmurciaapp.models.Place
+import com.juice_studio.busmurciaapp.models.toPlaceEntity
 import io.nlopez.smartlocation.SmartLocation
+import kotlinx.android.synthetic.main.fragment_new_place.*
 import kotlinx.android.synthetic.main.fragment_places.*
+import kotlinx.android.synthetic.main.fragment_places.button_create_place
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class PlacesFragment : Fragment(R.layout.fragment_places) {
 
@@ -44,52 +54,56 @@ class PlacesFragment : Fragment(R.layout.fragment_places) {
                 //The last location in the list is the newest
                 val location = locationList.last()
 
-                val place = Place("Tu ubicación", location.latitude, location.longitude)
+                val place = Place( "Tu ubicación", location.latitude, location.longitude)
                 val action = PlacesFragmentDirections.actionPlacesFragmentToPlaceFragment(place)
                 findNavController().navigate(action)
 
             }
         }
     }
+    private lateinit var appDatabase: AppDatabase
+    private val placesAdapter = PlaceAdapter(mutableListOf())
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        button_media_legua.setOnClickListener{
-            val place = Place("Media Legua (Nonduermas)", 37.972487, -1.172476)
-            val action = PlacesFragmentDirections.actionPlacesFragmentToPlaceFragment(place)
-            findNavController().navigate(action)
+
+        requireActivity().title = "Mis sitios guardados"
+
+
+        //Load Database
+        appDatabase = AppDatabase
+                .getDatabase(requireContext())
+
+
+        CoroutineScope(Dispatchers.IO).launch {
+
+            var places = appDatabase.placeDao().getAllPlaces()
+
+
+            requireActivity().runOnUiThread {
+                placesAdapter.items =places.map { placeEntity -> placeEntity.toPlace() }
+                placesAdapter.notifyDataSetChanged()
+            }
+
+
         }
 
-        button_la_vereda.setOnClickListener {
-            val place = Place("La Vereda (Aljucer)", 37.955330, -1.151101)
-            val action = PlacesFragmentDirections.actionPlacesFragmentToPlaceFragment(place)
-            findNavController().navigate(action)
+        placesAdapter.placeClickListener = (object:PlaceClickListener{
+            override fun onPlaceClick(place: Place) {
+                val action = PlacesFragmentDirections.actionPlacesFragmentToPlaceFragment(place)
+                findNavController().navigate(action)
+            }
 
-        }
+        })
 
-        button_media_legua_raya.setOnClickListener {
-            val place = Place("Media Legua (La Raya)", 37.973143, -1.172564)
-            val action = PlacesFragmentDirections.actionPlacesFragmentToPlaceFragment(place)
-            findNavController().navigate(action)
-        }
-
-        button_era_alta.setOnClickListener {
-            val place = Place("Era Alta", 37.968046, -1.168820)
-            val action = PlacesFragmentDirections.actionPlacesFragmentToPlaceFragment(place)
-            findNavController().navigate(action)
-        }
+        recycler_places.adapter = placesAdapter
 
 
-        button_circular.setOnClickListener {
-            val place = Place("Plaza Circular, 14", 37.992563, -1.129781)
-            val action = PlacesFragmentDirections.actionPlacesFragmentToPlaceFragment(place)
-            findNavController().navigate(action)
-        }
-        button_constitucion.setOnClickListener {
-            val place = Place("Avenida Constitucion, 5", 37.990512, -1.131447)
-            val action = PlacesFragmentDirections.actionPlacesFragmentToPlaceFragment(place)
-            findNavController().navigate(action)
+        button_create_place.setOnClickListener {
+            findNavController().navigate(R.id.action_placesFragment_to_newPlaceFragment)
         }
 
         button_location.setOnClickListener {

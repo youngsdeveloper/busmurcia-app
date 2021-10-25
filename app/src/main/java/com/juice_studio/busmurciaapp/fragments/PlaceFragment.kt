@@ -35,8 +35,6 @@ class PlaceFragment : Fragment(R.layout.fragment_place) {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        title_place.text = args.place.name
-        requireActivity().actionBar?.title = args.place.name
 
         fetchPlace()
 
@@ -44,6 +42,9 @@ class PlaceFragment : Fragment(R.layout.fragment_place) {
 
 
     private fun fetchPlace(){
+
+        requireActivity().title = args.place.name
+
         progressBar.visibility = View.VISIBLE
         CoroutineScope(Dispatchers.IO).launch {
             val place = args.place
@@ -62,7 +63,7 @@ class PlaceFragment : Fragment(R.layout.fragment_place) {
                     val routeClickListener = object : RouteClickListener {
                         override fun onRouteClick(r: Route,s: Stop) {
 
-                            val action = PlaceFragmentDirections.actionPlaceFragmentToRouteFragment(r, s)
+                            val action = PlaceFragmentDirections.actionPlaceFragmentToRouteFragment(r,r.id.toString(),  s)
                             findNavController().navigate(action)
 
                         }
