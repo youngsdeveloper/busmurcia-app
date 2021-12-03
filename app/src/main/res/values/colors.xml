@@ -12,4 +12,7 @@
     <color name="green_success">#2ecc71</color>
     <color name="red_danger">#c0392b</color>
 
+    <color name="tmp_murcia">#ED2E38</color>
+    <color name="tmp_murcia_dark">#A10F17</color>
+
 </resources>

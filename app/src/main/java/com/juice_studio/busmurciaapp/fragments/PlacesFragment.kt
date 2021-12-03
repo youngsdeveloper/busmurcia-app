@@ -8,14 +8,14 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
+import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -29,12 +29,11 @@ import com.juice_studio.busmurciaapp.local.toPlace
 import com.juice_studio.busmurciaapp.models.Place
 import com.juice_studio.busmurciaapp.models.toPlaceEntity
 import io.nlopez.smartlocation.SmartLocation
-import kotlinx.android.synthetic.main.fragment_new_place.*
 import kotlinx.android.synthetic.main.fragment_places.*
-import kotlinx.android.synthetic.main.fragment_places.button_create_place
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+
 
 class PlacesFragment : Fragment(R.layout.fragment_places) {
 
@@ -54,7 +53,7 @@ class PlacesFragment : Fragment(R.layout.fragment_places) {
                 //The last location in the list is the newest
                 val location = locationList.last()
 
-                val place = Place( "Tu ubicación", location.latitude, location.longitude)
+                val place = Place("Tu ubicación", location.latitude, location.longitude)
                 val action = PlacesFragmentDirections.actionPlacesFragmentToPlaceFragment(place)
                 findNavController().navigate(action)
 
@@ -77,25 +76,31 @@ class PlacesFragment : Fragment(R.layout.fragment_places) {
         appDatabase = AppDatabase
                 .getDatabase(requireContext())
 
-
-        CoroutineScope(Dispatchers.IO).launch {
-
-            var places = appDatabase.placeDao().getAllPlaces()
-
-
-            requireActivity().runOnUiThread {
-                placesAdapter.items =places.map { placeEntity -> placeEntity.toPlace() }
-                placesAdapter.notifyDataSetChanged()
-            }
-
-
-        }
+        // Load Places
+        loadPlaces()
 
         placesAdapter.placeClickListener = (object:PlaceClickListener{
             override fun onPlaceClick(place: Place) {
                 val action = PlacesFragmentDirections.actionPlacesFragmentToPlaceFragment(place)
                 findNavController().navigate(action)
             }
+
+            override fun onPlaceDelete(place: Place) {
+
+
+
+                CoroutineScope(Dispatchers.IO).launch {
+
+                    appDatabase.placeDao().deletePlace(place.toPlaceEntity());
+
+                    loadPlaces()
+
+                    Log.d("Eliminar", "Load places");
+
+                }
+
+            }
+
 
         })
 
@@ -118,6 +123,19 @@ class PlacesFragment : Fragment(R.layout.fragment_places) {
                     }
         }
 
+    }
+
+    private fun loadPlaces(){
+        CoroutineScope(Dispatchers.IO).launch {
+
+            var places = appDatabase.placeDao().getAllPlaces()
+
+
+            requireActivity().runOnUiThread {
+                placesAdapter.items =places.map { placeEntity -> placeEntity.toPlace() }
+                placesAdapter.notifyDataSetChanged()
+            }
+        }
     }
 
 
@@ -176,6 +194,16 @@ class PlacesFragment : Fragment(R.layout.fragment_places) {
                 ),
                 MY_PERMISSIONS_REQUEST_LOCATION
         )
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        (activity as AppCompatActivity?)!!.supportActionBar!!.show()
     }
 
     private fun requestBackgroundLocationPermission() {

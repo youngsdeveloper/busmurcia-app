@@ -1,9 +1,6 @@
 package com.juice_studio.busmurciaapp.local
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface PlaceDao {
@@ -13,4 +10,7 @@ interface PlaceDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun savePlace(place: PlaceEntity)
+
+    @Delete
+    suspend fun deletePlace(place: PlaceEntity)
 }

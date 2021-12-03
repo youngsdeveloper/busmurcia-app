@@ -158,6 +158,16 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
     private fun downloadRemotelRealTimeData(){
 
+
+        text_next_bus.visibility = View.GONE
+        text_status_next_bus.visibility = View.GONE
+        text_next_bus_line.visibility = View.GONE
+
+        loading_realtime.visibility = View.VISIBLE;
+        loading_realtime.indeterminateDrawable.setColorFilter(
+            resources.getColor(R.color.tmp_murcia),
+            android.graphics.PorterDuff.Mode.SRC_IN);
+
         CoroutineScope(Dispatchers.IO).launch {
 
 
@@ -194,6 +204,9 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
     private fun loadRealTimeData(realtime_hours: List<RealTimeHour>){
 
+
+        loading_realtime.visibility = View.GONE;
+
         this.realtime_hours = realtime_hours
 
         text_next_bus.text = "No hay información en tiempo real"
@@ -208,6 +221,9 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
         var min_nearest_hour: Hour? = null
         var min_realtime: RealTimeHour? = null
 
+        var LATBUS_MODE = false // If minutes latbus <= 3, use latbus info
+        var LATBUS_MINUTES: Int = 0
+
         for(realtime in realtime_hours){
 
             var base_time = Date()
@@ -217,6 +233,11 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
                 val minutes = realtime.real_time.filter { it.isDigit() }
                 calendar.add(Calendar.MINUTE, minutes.toInt())
                 base_time = calendar.time
+
+                if(minutes.toInt() <= 3 ){
+                    LATBUS_MODE = true
+                    LATBUS_MINUTES = minutes.toInt()
+                }
 
             }
 
@@ -241,20 +262,39 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
             text_next_bus_line.text = "L" + min_realtime!!.line_id + "-" + min_realtime!!.synoptic
 
+            //Calculamos la hora estimada de llegada
+
             var estimated_hour = nearest_hour.date
-            var cal = Calendar.getInstance()
-            cal.time = estimated_hour
+
+            if(LATBUS_MODE){
+                // Usando informacion latbus cuando minutos <= 3
+                estimated_hour = Date()
+                var cal = Calendar.getInstance()
+                cal.time = estimated_hour
+
+                cal.add(Calendar.MINUTE, LATBUS_MINUTES)
+                cal.set(Calendar.SECOND, 0) // Set seconds to 0
+                estimated_hour = cal.time
 
 
-            if(min_realtime!!.isAdelantado()){
-                cal.add(Calendar.MINUTE, min_realtime!!.delay_minutes.toInt() * (-1))
-            }else if(min_realtime!!.isRetrasado()){
-                cal.add(Calendar.MINUTE, min_realtime!!.delay_minutes.toInt())
+            }else{
+                // Algoritmo propio
+                estimated_hour = nearest_hour.date
+                var cal = Calendar.getInstance()
+                cal.time = estimated_hour
+
+                if(min_realtime!!.isAdelantado()){
+                    cal.add(Calendar.MINUTE, min_realtime!!.delay_minutes.toInt() * (-1))
+                }else if(min_realtime!!.isRetrasado()){
+                    cal.add(Calendar.MINUTE, min_realtime!!.delay_minutes.toInt())
+                }
+                cal.set(Calendar.SECOND, 0) // Set seconds to 0
+                estimated_hour = cal.time
+
             }
 
-            cal.set(Calendar.SECOND, 0) // Set seconds to 0
+            // Calculamos la diferencia de minutos con respecto al tiempo actual
 
-            estimated_hour = cal.time
             val format: DateFormat = SimpleDateFormat("HH:mm")
 
 
@@ -273,8 +313,18 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
             }
 
             //
+            val status_latbus = if (min_realtime!!.real_time.matches(".*\\d.*".toRegex())) "MINUTES" else "INFO"
 
-            if(min_realtime!!.real_time.matches(".*\\d.*".toRegex())){
+            if(status_latbus == "MINUTES" && diffInMinutes<=1){
+                text_status_next_bus.text = "Llegada inminente"
+                text_status_next_bus.setTextColor(
+                        ContextCompat.getColor(
+                                requireContext(),
+                                R.color.green_success
+                        )
+                )
+                text_next_bus.visibility = View.GONE
+            }else if (status_latbus == "MINUTES"){
                 if(min_realtime!!.isEnHora()){
                     text_status_next_bus.text = "En hora"
                     text_status_next_bus.setTextColor(

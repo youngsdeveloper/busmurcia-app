@@ -3,6 +3,7 @@ package com.juice_studio.busmurciaapp.models
 import android.os.Parcelable
 import com.juice_studio.busmurciaapp.local.PlaceEntity
 import kotlinx.android.parcel.Parcelize
+import java.util.*
 
 @Parcelize
 data class Place(
