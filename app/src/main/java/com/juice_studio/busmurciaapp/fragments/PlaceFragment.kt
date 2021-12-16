@@ -78,7 +78,8 @@ class PlaceFragment : Fragment(R.layout.fragment_place) {
         val routeClickListener = object : RouteClickListener {
             override fun onRouteClick(r: Route, s: Stop) {
 
-                val action = PlaceFragmentDirections.actionPlaceFragmentToRouteFragment(r, r.id.toString(), s)
+
+                val action = PlaceFragmentDirections.actionPlaceFragmentToRouteFragment(r, r.id.toString(), s, s.name)
                 findNavController().navigate(action)
 
             }

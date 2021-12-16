@@ -16,9 +16,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import com.juice_studio.busmurciaapp.R
 import com.juice_studio.busmurciaapp.adapters.HourAdapter
+import com.juice_studio.busmurciaapp.adapters.ITMPAdapter
+import com.juice_studio.busmurciaapp.adapters.TMPAdapter
 import com.juice_studio.busmurciaapp.io.ApiAdapter
 import com.juice_studio.busmurciaapp.models.Hour
 import com.juice_studio.busmurciaapp.models.RealTimeHour
+import com.juice_studio.busmurciaapp.models.Route
 import kotlinx.android.synthetic.main.fragment_route.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -41,6 +44,9 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
 
     lateinit var mainHandler: Handler
+
+
+    lateinit var tmpAdapter:ITMPAdapter
 
 
     private val updateRealtimeTask = object : Runnable {
@@ -67,6 +73,7 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
         // Handler
         mainHandler = Handler(Looper.getMainLooper())
 
+        setHasOptionsMenu(true)
 
     }
 
@@ -93,25 +100,66 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setHasOptionsMenu(true)
 
         val route = args.route
+
+
+        //Creamos el adaptador
+        tmpAdapter = TMPAdapter(route)
+
+        //Crea el adaptador de horas
+        hours_adapter = HourAdapter(mutableListOf())
+        recycler_hours.adapter = hours_adapter
+
+
+        // Initializa real time hours
+        this.realtime_hours = args.route.getRealTimeHours()
+
+
+        loadRoute(route)
+
+        downloadLocalRealTimeData()
+        downloadRemotelRealTimeData()
+    }
+
+
+
+    private fun loadRoute(route: Route){
+
         text_route_number.text = "L${route.id}"
         text_route_headsign.text = "${route.getRouteHeadsign()}"
 
+        loadSynoptic(route)
+        updateHours()
+
+        GridLayoutManager(
+                requireContext(),
+                4,
+                RecyclerView.VERTICAL,
+                false
+        ).apply {
+            recycler_hours.layoutManager = this
+        }
+
+        switch_full_hours.setOnCheckedChangeListener { buttonView, isChecked ->
+            updateHours()
+        }
+
+    }
+
+    private fun loadSynoptic(route:Route){
         val onCheckedListener = object:CompoundButton.OnCheckedChangeListener{
             override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-                hours_adapter.items = getHoursFiltered()
-                hours_adapter.notifyDataSetChanged()
+                updateHours();
                 downloadLocalRealTimeData()
             }
         }
 
         for(synoptic in route.getSynopticInRoute()){
             val chip = layoutInflater.inflate(
-                R.layout.layout_chip_choice,
-                chip_group_synoptic,
-                false
+                    R.layout.layout_chip_choice,
+                    chip_group_synoptic,
+                    false
             ) as Chip
             chip.text = "L${route.id} - ${synoptic}"
             chip.tag = synoptic
@@ -120,40 +168,9 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
             chipList.add(chip)
         }
 
-        // Initializa real time hours
-        this.realtime_hours = args.route.getRealTimeHours()
-
-        downloadLocalRealTimeData()
-
-
-        var hours = route.getLineHours()
-        if(!switch_full_hours.isChecked){
-            hours = hours.filter { hour -> hour.date.after(Date()) }
-        }
-
-        hours_adapter = HourAdapter(hours)
-        recycler_hours.adapter = hours_adapter
-
-        GridLayoutManager(
-            requireContext(),
-            4,
-            RecyclerView.VERTICAL,
-            false
-        ).apply {
-            recycler_hours.layoutManager = this
-        }
-
-        switch_full_hours.setOnCheckedChangeListener { buttonView, isChecked ->
-            hours_adapter.items = getHoursFiltered()
-            hours_adapter.notifyDataSetChanged()
-        }
-
-
-        downloadRemotelRealTimeData()
-
-
 
     }
+
 
 
     private fun downloadRemotelRealTimeData(){
@@ -189,14 +206,8 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
                     }
                 }
             }
-
-
-
         }
-
-
     }
-
 
     private fun downloadLocalRealTimeData(){
         loadRealTimeData(realtime_hours)
@@ -209,177 +220,44 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
         this.realtime_hours = realtime_hours
 
-        text_next_bus.text = "No hay información en tiempo real"
-        text_status_next_bus.visibility = View.GONE
-        text_next_bus_line.visibility = View.GONE
-        text_next_bus.visibility = View.VISIBLE
-
-        var realtime_hours = realtime_hours.filter { rt -> getActiveSynoptics().contains(rt.synoptic) }
 
 
+        tmpAdapter.realtime_hours = realtime_hours
+        val realTimeData = tmpAdapter.getRealTimeData()
 
-        var min_nearest_hour: Hour? = null
-        var min_realtime: RealTimeHour? = null
+        text_next_bus_line.text = realTimeData.linea_cabecera
+        text_status_next_bus.text = realTimeData.status
+        text_next_bus.text = realTimeData.llegada_estimada
 
-        var LATBUS_MODE = false // If minutes latbus <= 3, use latbus info
-        var LATBUS_MINUTES: Int = 0
+        text_status_next_bus.setTextColor(ContextCompat.getColor(requireContext(), realTimeData.status_color))
 
-        for(realtime in realtime_hours){
+        text_status_next_bus.visibility = View.VISIBLE
 
-            var base_time = Date()
-            if(realtime!!.real_time.matches(".*\\d.*".toRegex())){
-                val calendar = Calendar.getInstance()
-                calendar.time = base_time
-                val minutes = realtime.real_time.filter { it.isDigit() }
-                calendar.add(Calendar.MINUTE, minutes.toInt())
-                base_time = calendar.time
-
-                if(minutes.toInt() <= 3 ){
-                    LATBUS_MODE = true
-                    LATBUS_MINUTES = minutes.toInt()
-                }
-
-            }
-
-
-            val nearest_hour = args.route.findNearestHour(realtime.synoptic, base_time)
-
-            if(min_nearest_hour==null){
-                min_nearest_hour = nearest_hour
-                min_realtime = realtime
-            }else if(nearest_hour!!.date.before(min_nearest_hour.date)){
-                min_nearest_hour = nearest_hour
-                min_realtime = realtime
-            }
-
-        }
-
-
-        min_nearest_hour?.let { nearest_hour ->
-
-            text_status_next_bus.visibility = View.VISIBLE
+        if(realTimeData.linea_cabecera.isEmpty()){
+            text_next_bus_line.visibility = View.GONE
+        }else{
             text_next_bus_line.visibility = View.VISIBLE
+        }
 
-            text_next_bus_line.text = "L" + min_realtime!!.line_id + "-" + min_realtime!!.synoptic
-
-            //Calculamos la hora estimada de llegada
-
-            var estimated_hour = nearest_hour.date
-
-            if(LATBUS_MODE){
-                // Usando informacion latbus cuando minutos <= 3
-                estimated_hour = Date()
-                var cal = Calendar.getInstance()
-                cal.time = estimated_hour
-
-                cal.add(Calendar.MINUTE, LATBUS_MINUTES)
-                cal.set(Calendar.SECOND, 0) // Set seconds to 0
-                estimated_hour = cal.time
-
-
-            }else{
-                // Algoritmo propio
-                estimated_hour = nearest_hour.date
-                var cal = Calendar.getInstance()
-                cal.time = estimated_hour
-
-                if(min_realtime!!.isAdelantado()){
-                    cal.add(Calendar.MINUTE, min_realtime!!.delay_minutes.toInt() * (-1))
-                }else if(min_realtime!!.isRetrasado()){
-                    cal.add(Calendar.MINUTE, min_realtime!!.delay_minutes.toInt())
-                }
-                cal.set(Calendar.SECOND, 0) // Set seconds to 0
-                estimated_hour = cal.time
-
-            }
-
-            // Calculamos la diferencia de minutos con respecto al tiempo actual
-
-            val format: DateFormat = SimpleDateFormat("HH:mm")
-
-
-            val diff = estimated_hour.time - Date().time
-            val diffInMinutes = TimeUnit.MILLISECONDS.toMinutes(diff) +
-                    1
-            text_next_bus.text = "Llegada estimada: " + format.format(estimated_hour)
-            //text_next_bus.text = nearest_hour?.hour_string + " " + nearest_hour.synoptic + "\n" + realtime.delay_string.capitalize() + " " +realtime.delay_minutes +  " minutos" + "\n" + realtime.real_time
-
-
-            if(diffInMinutes>=1){
-                text_next_bus.text = text_next_bus.text.toString() + " (En " + diffInMinutes + pluralize(
-                    diffInMinutes.toInt(),
-                    " minuto"
-                ) + ")"
-            }
-
-            //
-            val status_latbus = if (min_realtime!!.real_time.matches(".*\\d.*".toRegex())) "MINUTES" else "INFO"
-
-            if(status_latbus == "MINUTES" && diffInMinutes<=1){
-                text_status_next_bus.text = "Llegada inminente"
-                text_status_next_bus.setTextColor(
-                        ContextCompat.getColor(
-                                requireContext(),
-                                R.color.green_success
-                        )
-                )
-                text_next_bus.visibility = View.GONE
-            }else if (status_latbus == "MINUTES"){
-                if(min_realtime!!.isEnHora()){
-                    text_status_next_bus.text = "En hora"
-                    text_status_next_bus.setTextColor(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.green_success
-                        )
-                    )
-                }else{
-                    text_status_next_bus.text = min_realtime!!.delay_string.capitalize() + " " + min_realtime!!.delay_minutes + " " + pluralize(
-                        min_realtime!!.delay_minutes.toInt(),
-                        "minuto"
-                    )
-                    text_status_next_bus.setTextColor(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.red_danger
-                        )
-                    )
-                }
-                text_next_bus.visibility = View.VISIBLE
-
-            }else{
-                text_status_next_bus.text = min_realtime!!.real_time
-                text_status_next_bus.setTextColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.green_success
-                    )
-                )
-                text_next_bus.visibility = View.GONE
-            }
-
+        if(realTimeData.llegada_estimada.isEmpty()){
+            text_next_bus.visibility = View.GONE
+        }else{
+            text_next_bus.visibility = View.VISIBLE
         }
     }
 
-    private fun pluralize(cant: Int, str: String):String{
-        if(cant>1){
-            return str + "s"
-        }
-        return str
-    }
+    private fun updateHours(){
 
-    private fun getHoursFiltered():List<Hour>{
+        tmpAdapter.activeSynoptics = getActiveSynoptics()
 
-        var hours = args.route.getLineHours()
-        hours = hours.filter { hour -> getActiveSynoptics().contains(hour.synoptic) }
+        var hours = tmpAdapter.getNextHours()
 
-        if(!switch_full_hours.isChecked){
-            var current = Calendar.getInstance()
-            current.add(Calendar.MINUTE, -30)
-            hours = hours.filter { hour -> hour.date.after(current.time) }
+        if(switch_full_hours.isChecked){
+            hours = tmpAdapter.getFullHours()
         }
 
-        return hours
+        hours_adapter.items = hours
+        hours_adapter.notifyDataSetChanged()
     }
 
     private fun getActiveSynoptics():List<String>{

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1057223509250",
+    "project_id": "latbus-client",
+    "storage_bucket": "latbus-client.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1057223509250:android:a330d6d757a9fcd9c7ae1b",
+        "android_client_info": {
+          "package_name": "com.juice_studio.busmurciaapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1057223509250-hi059jccl77vtph7e1linuqos69b83mi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWrIYaQFMV24HSgQUiryaMMzFJ6JdTzuI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1057223509250-hi059jccl77vtph7e1linuqos69b83mi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

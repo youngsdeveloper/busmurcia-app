@@ -1,11 +1,9 @@
 package com.juice_studio.busmurciaapp.activites
 
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.juice_studio.busmurciaapp.R
 import kotlinx.android.synthetic.main.activity_main.*
@@ -24,10 +22,20 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
 
         val appBarConfiguration = AppBarConfiguration(navController.graph)
-        setSupportActionBar(topAppBar)
         topAppBar.setupWithNavController(navController, appBarConfiguration)
+        setSupportActionBar(topAppBar)
+
+
+        topAppBar.setNavigationOnClickListener {
+            if(navController.graph.startDestination == navController.currentDestination?.id) {
+                finish()
+            } else {
+                navController.navigateUp()
+            }
+        }
 
     }
+
 
 
 }

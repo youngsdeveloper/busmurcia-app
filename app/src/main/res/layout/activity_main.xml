@@ -16,12 +16,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="?actionBarSize"
+
             style="@style/Widget.MaterialComponents.Toolbar.Primary"
-            />
+            >
+        </com.google.android.material.appbar.MaterialToolbar>
+
+
+
+
 
     </com.google.android.material.appbar.AppBarLayout>
     <androidx.fragment.app.FragmentContainerView

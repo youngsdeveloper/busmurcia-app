@@ -54,7 +54,7 @@ class PlacesFragment : Fragment(R.layout.fragment_places) {
                 val location = locationList.last()
 
                 val place = Place("Tu ubicación", location.latitude, location.longitude)
-                val action = PlacesFragmentDirections.actionPlacesFragmentToPlaceFragment(place)
+                val action = PlacesFragmentDirections.actionPlacesFragmentToPlaceFragment(place, place.name)
                 findNavController().navigate(action)
 
             }
@@ -69,7 +69,6 @@ class PlacesFragment : Fragment(R.layout.fragment_places) {
         super.onViewCreated(view, savedInstanceState)
 
 
-        requireActivity().title = "Mis sitios guardados"
 
 
         //Load Database
@@ -81,7 +80,7 @@ class PlacesFragment : Fragment(R.layout.fragment_places) {
 
         placesAdapter.placeClickListener = (object:PlaceClickListener{
             override fun onPlaceClick(place: Place) {
-                val action = PlacesFragmentDirections.actionPlacesFragmentToPlaceFragment(place)
+                val action = PlacesFragmentDirections.actionPlacesFragmentToPlaceFragment(place, place.name)
                 findNavController().navigate(action)
             }
 
@@ -117,7 +116,7 @@ class PlacesFragment : Fragment(R.layout.fragment_places) {
                     .oneFix()
                     .start { location ->
                         val place = Place("Tu ubicación", location.latitude, location.longitude)
-                        val action = PlacesFragmentDirections.actionPlacesFragmentToPlaceFragment(place)
+                        val action = PlacesFragmentDirections.actionPlacesFragmentToPlaceFragment(place, place.name)
                         findNavController().navigate(action)
 
                     }
@@ -195,17 +194,6 @@ class PlacesFragment : Fragment(R.layout.fragment_places) {
                 MY_PERMISSIONS_REQUEST_LOCATION
         )
     }
-
-    override fun onResume() {
-        super.onResume()
-        (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        (activity as AppCompatActivity?)!!.supportActionBar!!.show()
-    }
-
     private fun requestBackgroundLocationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             ActivityCompat.requestPermissions(

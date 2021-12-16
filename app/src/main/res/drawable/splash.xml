@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@color/tmp_murcia"></item>
+<layer-list
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" >
+    <item android:drawable="@color/tmp_murcia"
+        tools:drawable="@color/white"></item>
     <item>
         <bitmap
             android:src="@drawable/logo_tmp"
-            android:gravity="center"></bitmap>
+            android:gravity="center"
+            tools:src="null"></bitmap>
     </item>
 </layer-list>
