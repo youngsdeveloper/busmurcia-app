@@ -36,7 +36,7 @@
     <fragment
         android:id="@+id/routeFragment"
         android:name="com.juice_studio.busmurciaapp.fragments.RouteFragment"
-        android:label="Linea {route_title} ({stop_name})"
+        android:label="L{route_title} ({stop_name})"
 
         tools:layout="@layout/fragment_route" >
         <argument
@@ -51,6 +51,9 @@
         <argument
             android:name="stop_name"
             app:argType="string" />
+        <action
+            android:id="@+id/action_routeFragment_to_routeStopsFragment"
+            app:destination="@id/routeStopsFragment" />
 
     </fragment>
     <fragment
@@ -58,4 +61,31 @@
         android:name="com.juice_studio.busmurciaapp.fragments.NewPlaceFragment"
         android:label="Nuevo sitio"
         tools:layout="@layout/fragment_new_place" />
+    <fragment
+        android:id="@+id/routeStopsFragment"
+        android:name="com.juice_studio.busmurciaapp.fragments.RouteStopsFragment"
+        android:label="Recorrido L{route_title}"
+        tools:layout="@layout/fragment_route_stops">
+
+
+        <argument
+            android:name="route"
+            app:argType="com.juice_studio.busmurciaapp.models.Route" />
+        <argument
+            android:name="route_title"
+            app:argType="string" />
+        <argument
+            android:name="stop"
+            app:argType="com.juice_studio.busmurciaapp.models.Stop" />
+        <argument
+            android:name="stop_name"
+            app:argType="string" />
+
+        <argument
+            android:name="synoptics"
+            app:argType="string[]" />
+
+
+
+    </fragment>
 </navigation>

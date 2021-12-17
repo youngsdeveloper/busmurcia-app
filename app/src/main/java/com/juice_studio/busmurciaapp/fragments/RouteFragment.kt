@@ -6,10 +6,9 @@ import android.os.Looper
 import android.view.*
 import android.widget.CompoundButton
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,17 +18,13 @@ import com.juice_studio.busmurciaapp.adapters.HourAdapter
 import com.juice_studio.busmurciaapp.adapters.ITMPAdapter
 import com.juice_studio.busmurciaapp.adapters.TMPAdapter
 import com.juice_studio.busmurciaapp.io.ApiAdapter
-import com.juice_studio.busmurciaapp.models.Hour
 import com.juice_studio.busmurciaapp.models.RealTimeHour
 import com.juice_studio.busmurciaapp.models.Route
 import kotlinx.android.synthetic.main.fragment_route.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.text.DateFormat
-import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 
 private const val SECONDS = 1000
@@ -47,6 +42,8 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
 
     lateinit var tmpAdapter:ITMPAdapter
+
+    var synoptics = mutableListOf<String>()
 
 
     private val updateRealtimeTask = object : Runnable {
@@ -75,12 +72,16 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
         setHasOptionsMenu(true)
 
+        val route = args.route
+        this.synoptics = route.getSynopticInRoute().toMutableList()
+
+
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -92,10 +93,19 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-        if(item.itemId==R.id.action_reload_route){
-            downloadRemotelRealTimeData()
+
+        when(item.itemId){
+            R.id.action_reload_route -> downloadRemotelRealTimeData()
+            R.id.action_see_route -> openRouteStops()
         }
+
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun openRouteStops(){
+        val action = RouteFragmentDirections.actionRouteFragmentToRouteStopsFragment(args.route, args.routeTitle, args.stop, args.stopName, getActiveSynoptics().toTypedArray())
+        findNavController().navigate(action)
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -114,6 +124,7 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
         // Initializa real time hours
         this.realtime_hours = args.route.getRealTimeHours()
+
 
 
         loadRoute(route)
@@ -147,11 +158,28 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
     }
 
-    private fun loadSynoptic(route:Route){
+    private fun loadSynoptic(route: Route){
         val onCheckedListener = object:CompoundButton.OnCheckedChangeListener{
             override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+
+
+
+                val synoptic = buttonView?.tag as String
+
+                if(isChecked){
+                    synoptics.add(synoptic)
+                }else{
+                    synoptics.remove(synoptic)
+                }
+
                 updateHours();
                 downloadLocalRealTimeData()
+
+                /*
+                buttonView?.let { button ->
+                    synoptics.add(button.getTag(4).toString())
+                }*/
+
             }
         }
 
@@ -163,6 +191,7 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
             ) as Chip
             chip.text = "L${route.id} - ${synoptic}"
             chip.tag = synoptic
+            chip.isChecked = synoptics.contains(synoptic)
             chip.setOnCheckedChangeListener(onCheckedListener)
             chip_group_synoptic.addView(chip)
             chipList.add(chip)
@@ -182,8 +211,8 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
         loading_realtime.visibility = View.VISIBLE;
         loading_realtime.indeterminateDrawable.setColorFilter(
-            resources.getColor(R.color.tmp_murcia),
-            android.graphics.PorterDuff.Mode.SRC_IN);
+                resources.getColor(R.color.tmp_murcia),
+                android.graphics.PorterDuff.Mode.SRC_IN);
 
         CoroutineScope(Dispatchers.IO).launch {
 
@@ -262,6 +291,7 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
     private fun getActiveSynoptics():List<String>{
 
+        /*
         val synoptics = mutableListOf<String>()
 
         for(chip in chipList){
@@ -273,7 +303,8 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
             }
         }
 
-        return Collections.unmodifiableList(synoptics)
+        return Collections.unmodifiableList(synoptics)*/
+        return synoptics;
     }
 
 

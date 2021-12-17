@@ -10,7 +10,7 @@ import kotlin.math.abs
 @Parcelize
 data class Route(
         val id: Int,
-        val lines: List<Line>
+        val lines: List<Line>,
 ): Parcelable{
     fun getRouteNameForHumans():String{
         return "L$id - ${getRouteHeadsign()}"

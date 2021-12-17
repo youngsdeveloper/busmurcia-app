@@ -7,7 +7,9 @@ import kotlinx.android.parcel.Parcelize
 data class Stop(
     val id: Integer,
     val name: String,
-    val lines: List<Line>
+    val lines: List<Line>,
+    val city: String,
+    val order: Int
 ):Parcelable{
     fun getLinesByRoute():Map<Int, List<Line>>{
         return lines.groupBy { line -> line.route }
@@ -25,6 +27,21 @@ data class Stop(
             routes.add(route)
         }
         return routes
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Stop
+
+        if (id != other.id) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
     }
 
 }

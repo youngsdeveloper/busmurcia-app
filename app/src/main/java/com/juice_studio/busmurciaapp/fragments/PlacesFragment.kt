@@ -21,6 +21,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.juice_studio.busmurciaapp.R
 import com.juice_studio.busmurciaapp.adapters.PlaceAdapter
 import com.juice_studio.busmurciaapp.adapters.PlaceClickListener
@@ -53,7 +54,7 @@ class PlacesFragment : Fragment(R.layout.fragment_places) {
                 //The last location in the list is the newest
                 val location = locationList.last()
 
-                val place = Place("Tu ubicación", location.latitude, location.longitude)
+                val place = Place(-1, "Tu ubicación", location.latitude, location.longitude)
                 val action = PlacesFragmentDirections.actionPlacesFragmentToPlaceFragment(place, place.name)
                 findNavController().navigate(action)
 
@@ -87,16 +88,36 @@ class PlacesFragment : Fragment(R.layout.fragment_places) {
             override fun onPlaceDelete(place: Place) {
 
 
-
-                CoroutineScope(Dispatchers.IO).launch {
-
-                    appDatabase.placeDao().deletePlace(place.toPlaceEntity());
-
-                    loadPlaces()
-
-                    Log.d("Eliminar", "Load places");
-
+                if(place.id<0){
+                    return;
                 }
+
+                MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Eliminar sitio favorito")
+                        .setMessage("¿Estas seguro de que deseas eliminar de tus favoritos: '" + place.name + "'?")
+                        .setNegativeButton("Cancelar", null)
+                        .setPositiveButton("Eliminar sitio") { dialog, which ->
+                            // Respond to positive button press
+                            CoroutineScope(Dispatchers.IO).launch {
+
+                                appDatabase.placeDao().deletePlace(place.id);
+
+                                loadPlaces()
+
+                                requireActivity().runOnUiThread {
+                                    MaterialAlertDialogBuilder(requireContext())
+                                            .setTitle("Sitio eliminado")
+                                            .setMessage("El sitio ha sido eliminado de tus favoritos correctamente, puedes volver a añadirlo cuando quieras.")
+                                            .setPositiveButton("De acuerdo", null)
+                                            .show()
+                                }
+
+                            }
+                        }
+                        .show()
+
+
+
 
             }
 
@@ -115,7 +136,7 @@ class PlacesFragment : Fragment(R.layout.fragment_places) {
             SmartLocation.with(context).location()
                     .oneFix()
                     .start { location ->
-                        val place = Place("Tu ubicación", location.latitude, location.longitude)
+                        val place = Place(-1, "Tu ubicación", location.latitude, location.longitude)
                         val action = PlacesFragmentDirections.actionPlacesFragmentToPlaceFragment(place, place.name)
                         findNavController().navigate(action)
 

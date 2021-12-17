@@ -11,6 +11,7 @@ interface PlaceDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun savePlace(place: PlaceEntity)
 
-    @Delete
-    suspend fun deletePlace(place: PlaceEntity)
+
+    @Query("DELETE FROM PlaceEntity WHERE id = :placeId")
+    fun deletePlace(placeId: Int)
 }

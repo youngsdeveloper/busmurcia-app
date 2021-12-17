@@ -135,7 +135,7 @@ class NewPlaceFragment : Fragment(R.layout.fragment_new_place) {
 
                 CoroutineScope(Dispatchers.IO).launch {
 
-                    val place = Place(text_place_name.text.toString(), location_picked?.position!!.latitude, location_picked?.position!!.longitude)
+                    val place = Place(-1, text_place_name.text.toString(), location_picked?.position!!.latitude, location_picked?.position!!.longitude)
                     appDatabase.placeDao()
                             .savePlace(place.toPlaceEntity())
 

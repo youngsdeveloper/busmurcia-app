@@ -27,5 +27,5 @@ data class PlaceEntity(
 
 
 fun PlaceEntity.toPlace(): Place {
-    return Place(this.name, this.lat, this.lon)
+    return Place(this.id, this.name, this.lat, this.lon)
 }
