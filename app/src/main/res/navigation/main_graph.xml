@@ -84,7 +84,9 @@
         <argument
             android:name="synoptics"
             app:argType="string[]" />
-
+        <action
+            android:id="@+id/action_routeStopsFragment_to_routeFragment"
+            app:destination="@id/routeFragment" />
 
 
     </fragment>

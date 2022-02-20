@@ -11,6 +11,8 @@ interface ITMPAdapter {
 
     fun getRealTimeData():RealTimeData;
 
+
+
     var activeSynoptics: List<String>
     var realtime_hours: List<RealTimeHour>
 }

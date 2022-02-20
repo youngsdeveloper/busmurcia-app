@@ -1,16 +1,24 @@
-package com.juice_studio.busmurciaapp.fragments
+ package com.juice_studio.busmurciaapp.fragments
 
 import android.os.Bundle
+import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
 import com.juice_studio.busmurciaapp.R
+import com.juice_studio.busmurciaapp.adapters.StopClickListener
+import com.juice_studio.busmurciaapp.adapters.StopRealtimeListener
 import com.juice_studio.busmurciaapp.adapters.StopRouteAdapter
+import com.juice_studio.busmurciaapp.adapters.TMPAdapter
 import com.juice_studio.busmurciaapp.io.ApiAdapter
 import com.juice_studio.busmurciaapp.models.Route
 import com.juice_studio.busmurciaapp.models.Stop
@@ -23,9 +31,10 @@ import kotlinx.android.synthetic.main.fragment_route_stops.recycler_stops
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 
-class RouteStopsFragment : Fragment(R.layout.fragment_route_stops){
+ class RouteStopsFragment : Fragment(R.layout.fragment_route_stops){
 
     private val chipList = mutableListOf<Chip>()
 
@@ -35,9 +44,31 @@ class RouteStopsFragment : Fragment(R.layout.fragment_route_stops){
     lateinit var route:Route
     lateinit var stopRoutes:List<StopRoute>
 
+    lateinit var adapter:StopRouteAdapter
 
     private var synoptics = mutableListOf<String>()
 
+
+     override fun onCreate(savedInstanceState: Bundle?) {
+         super.onCreate(savedInstanceState)
+         setHasOptionsMenu(true)
+     }
+
+
+     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+         super.onCreateOptionsMenu(menu, inflater)
+         inflater?.inflate(R.menu.menu_route_stops, menu)
+     }
+
+     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+
+         when(item.itemId){
+             R.id.action_change_direction -> change_direction()
+         }
+
+         return super.onOptionsItemSelected(item)
+     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -46,8 +77,14 @@ class RouteStopsFragment : Fragment(R.layout.fragment_route_stops){
 
         this.synoptics = args.synoptics.toMutableList()
 
+        text_headsign.text = route.lines[0].headsign
+
         loadSynoptic(route)
         downloadRouteStops(route);
+
+        adapter = StopRouteAdapter(mutableListOf(), requireContext())
+        recycler_stops.adapter = adapter
+        adapter.recyclerView = recycler_stops
 
     }
 
@@ -82,13 +119,18 @@ class RouteStopsFragment : Fragment(R.layout.fragment_route_stops){
         }
     }
 
-    private fun downloadRouteStops(route: Route){
+    private fun downloadRouteStops(route: Route, load_active:Boolean=true){
+
+        this.route = route
+
+        loading_stops.indeterminateDrawable.setColorFilter(
+                resources.getColor(R.color.tmp_murcia),
+                android.graphics.PorterDuff.Mode.SRC_IN);
+
+        loading_stops.visibility = View.VISIBLE
+        recycler_stops.visibility = View.GONE
 
         CoroutineScope(Dispatchers.IO).launch {
-
-
-            val stopsList = listOf<String>(args.stop.id.toString())
-            val linesList = args.route.lines.map { line -> line.id }
 
             val call = ApiAdapter
                     .getApiService()
@@ -101,14 +143,18 @@ class RouteStopsFragment : Fragment(R.layout.fragment_route_stops){
                 if(call.isSuccessful){
                     val routes = call.body();
                     routes?.let { routes ->
-                        loadRouteStop(routes)
+                        loadRouteStop(routes, load_active)
                     }
                 }
             }
         }
     }
 
-    private fun loadRouteStop(routes: List<StopRoute>){
+    private fun loadRouteStop(routes: List<StopRoute>, load_active: Boolean=true){
+
+
+        loading_stops.visibility = View.GONE
+        recycler_stops.visibility = View.VISIBLE
 
         this.stopRoutes = routes
 
@@ -125,20 +171,177 @@ class RouteStopsFragment : Fragment(R.layout.fragment_route_stops){
                 .sortedBy { stop -> stop.order }
                 .toList()
 
+        if(sr.isNotEmpty()){
+            text_headsign.text = sr[0].headsign
+            text_headsign.visibility = View.VISIBLE
+        }else{
+            text_headsign.visibility = View.GONE
+        }
+
+
+
+        adapter.items = stops
+        adapter.notifyDataSetChanged()
+
 
 
         //Toast.makeText(requireContext(), stops.toString(), Toast.LENGTH_LONG).show()
         //Toast.makeText(requireContext(), route.lines.toString(), Toast.LENGTH_LONG).show()
 
-        val adapter = StopRouteAdapter(stops)
-        recycler_stops.adapter = adapter
+
+
+        adapter.stopClickListener = object : StopClickListener {
+
+            override fun onStopClick(stop: Stop, listener: StopRealtimeListener) {
+
+                CoroutineScope(Dispatchers.IO).launch {
+
+
+
+                    val call_stop = ApiAdapter
+                            .getApiService()
+                            .getStopsByCoordinates(stop.latitude, stop.longitude)
+
+                    if(call_stop.isSuccessful){
+                        val stops = call_stop.body();
+
+
+
+                        val requested_stop = stops!!.filter { stp -> stp.id == stop.id }[0]
+
+
+                        val requested_route = requested_stop.getRoutes().filter{ rt -> rt.id == route.id }[0]
+
+                        val stopsList = listOf<String>(stop.id.toString())
+                        val linesList = args.route.lines
+                                .filter { line -> synoptics.contains(line.synoptic) }
+                                .filter { line -> line.direction == route.lines[0].direction }
+                                .map { line -> line.id }
+
+
+                        val call = ApiAdapter
+                                .getApiService()
+                                .getRealTimeHours(stopsList, linesList)
+
+
+
+                        if(call.isSuccessful){
+                            val realtime_hours = call.body();
+
+
+
+                            var tmpAdapter = TMPAdapter(requested_route)
+                            tmpAdapter.activeSynoptics = synoptics
+                            tmpAdapter.realtime_hours = realtime_hours!!
+
+                            requireActivity().runOnUiThread {
+
+
+
+                                var status_min = tmpAdapter.getRealTimeData().status_min!!
+                                if(status_min==null){
+                                    status_min = "No info"
+                                }
+
+                                listener.onStopRealtimeLoaded(stop, status_min, requested_route)
+                            }
+
+                        }
+
+                    }
+
+
+                }
+
+            }
+
+
+            override fun onStopDoubleClick(stop: Stop, _route: Route?) {
+
+                var rt:Route
+
+                if(_route!=null){
+                    rt = _route!!
+
+                    val action = RouteStopsFragmentDirections.actionRouteStopsFragmentToRouteFragment(rt, rt.id.toString(), stop, stop.name)
+                    findNavController().navigate(action)
+
+                }else{
+
+
+                    CoroutineScope(Dispatchers.IO).launch {
+
+
+
+                        val call_stop = ApiAdapter
+                                .getApiService()
+                                .getStopsByCoordinates(stop.latitude, stop.longitude)
+
+                        if(call_stop.isSuccessful){
+                            val stops = call_stop.body();
+
+
+
+                            val requested_stop = stops!!.filter { stp -> stp.id == stop.id }[0]
+
+
+                            val requested_route = requested_stop.getRoutes().filter{ rt -> rt.id == route.id }[0]
+
+                            requireActivity().runOnUiThread {
+                                val action = RouteStopsFragmentDirections.actionRouteStopsFragmentToRouteFragment(requested_route, requested_route.id.toString(), stop, stop.name)
+                                findNavController().navigate(action)
+
+                            }
+
+                        }
+
+
+                    }
+
+
+                }
+
+            }
+        }
+
+        if(stops.isNotEmpty() && load_active){
+            if(adapter.active_item == null){
+                adapter.loadActive(args.stop)
+            }else{
+                adapter.loadActive(adapter.active_item!!)
+            }
+        }
+
+
+
+
 
 
         val manager = recycler_stops.layoutManager as LinearLayoutManager
 
-        val dividerItemDecoration = DividerItemDecoration(recycler_stops.context, manager.orientation)
-        recycler_stops.addItemDecoration(dividerItemDecoration)
+        //val dividerItemDecoration = DividerItemDecoration(recycler_stops.context, manager.orientation)
+        //recycler_stops.addItemDecoration(dividerItemDecoration)
 
 
     }
+
+     private fun change_direction(){
+         val old_active = adapter.active_item
+
+         if(route.lines[0].direction==1){
+             route.lines[0].direction = 2;
+         }else{
+             route.lines[0].direction = 1;
+         }
+         downloadRouteStops(route, false)
+
+         if(old_active!=null){
+             if(adapter.items.isNotEmpty()){
+                 val stop_other_dir = adapter.items.filter { stp -> stp.name.contains(old_active.name) }[0]
+                 //Toast.makeText(requireContext(), stop_other_dir.toString(), Toast.LENGTH_LONG).show()
+                 adapter.loadActive(stop_other_dir)
+             }
+
+         }
+     }
 }

@@ -204,6 +204,10 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
     private fun downloadRemotelRealTimeData(){
 
+        if(!isAdded){
+            return; // Fix crash bug
+        }
+
 
         text_next_bus.visibility = View.GONE
         text_status_next_bus.visibility = View.GONE
@@ -243,6 +247,10 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
     }
 
     private fun loadRealTimeData(realtime_hours: List<RealTimeHour>){
+
+        if(loading_realtime==null){
+            return;
+        }
 
 
         loading_realtime.visibility = View.GONE;

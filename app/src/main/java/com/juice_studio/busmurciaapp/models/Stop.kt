@@ -9,7 +9,9 @@ data class Stop(
     val name: String,
     val lines: List<Line>,
     val city: String,
-    val order: Int
+    val order: Int,
+    val latitude: Double,
+    val longitude: Double
 ):Parcelable{
     fun getLinesByRoute():Map<Int, List<Line>>{
         return lines.groupBy { line -> line.route }

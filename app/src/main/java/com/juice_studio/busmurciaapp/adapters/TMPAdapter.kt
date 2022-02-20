@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.juice_studio.busmurciaapp.R
+import com.juice_studio.busmurciaapp.extensions.pluralize
 import com.juice_studio.busmurciaapp.models.Hour
 import com.juice_studio.busmurciaapp.models.RealTimeData
 import com.juice_studio.busmurciaapp.models.RealTimeHour
@@ -49,7 +50,11 @@ class TMPAdapter:ITMPAdapter {
 
     override fun getRealTimeData():RealTimeData {
 
+        Log.d("Stop: " , getRealTimeHours().toString())
+
         var realTimeData = RealTimeData("No hay información en tiempo real",R.color.black, "", "")
+
+        realTimeData.status_min = "-";
 
         var realtime_hours = getRealTimeHours()
 
@@ -137,10 +142,9 @@ class TMPAdapter:ITMPAdapter {
 
 
             if(diffInMinutes>=1){
-                realTimeData.llegada_estimada = realTimeData.llegada_estimada + " (En " + diffInMinutes + pluralize(
-                        diffInMinutes.toInt(),
-                        " minuto"
-                ) + ")"
+                realTimeData.llegada_estimada = realTimeData.llegada_estimada + " (En " + diffInMinutes + " minuto".pluralize(diffInMinutes.toInt()) + ")"
+
+                realTimeData.status_min = "$diffInMinutes min.";
             }
 
             //
@@ -150,19 +154,23 @@ class TMPAdapter:ITMPAdapter {
                 realTimeData.status = "Llegada inminente"
                 realTimeData.llegada_estimada = ""
                 realTimeData.status_color = R.color.green_success;
+                realTimeData.status_min = "1 min.";
+
             }else if (status_latbus == "MINUTES"){
                 if(min_realtime!!.isEnHora()){
                     realTimeData.status = "En hora"
                     realTimeData.status_color = R.color.green_success;
                 }else{
-                    realTimeData.status = min_realtime!!.delay_string.capitalize() + " " + min_realtime!!.delay_minutes + " " + pluralize(
-                            min_realtime!!.delay_minutes.toInt(),
-                            "minuto"
-                    )
+                    realTimeData.status = min_realtime!!.delay_string.capitalize() + " " + min_realtime!!.delay_minutes + " " + "minuto".pluralize(min_realtime!!.delay_minutes.toInt())
                     realTimeData.status_color = R.color.red_danger
                 }
             }else{
                 realTimeData.llegada_estimada = ""
+                if(min_realtime!!.real_time.contains("inminente")){
+                    realTimeData.status_min = "Inminente";
+                }else{
+                    realTimeData.status_min = min_realtime!!.real_time;
+                }
                 realTimeData.status = min_realtime!!.real_time
                 realTimeData.status_color = R.color.green_success
             }
@@ -175,13 +183,6 @@ class TMPAdapter:ITMPAdapter {
 
 
 
-    //TODO: Crear como extension
-    private fun pluralize(cant: Int, str: String):String{
-        if(cant>1){
-            return str + "s"
-        }
-        return str
-    }
 
 
 }
