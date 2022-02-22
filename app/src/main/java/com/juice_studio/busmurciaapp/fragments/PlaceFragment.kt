@@ -2,15 +2,13 @@ package com.juice_studio.busmurciaapp.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.provider.MediaStore.Video
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.juice_studio.busmurciaapp.R
 import com.juice_studio.busmurciaapp.adapters.RouteClickListener
 import com.juice_studio.busmurciaapp.adapters.StopAdapter
@@ -45,8 +43,8 @@ class PlaceFragment : Fragment(R.layout.fragment_place) {
         requireActivity().title = args.place.name
 
         progressBar.indeterminateDrawable.setColorFilter(
-            resources.getColor(R.color.tmp_murcia),
-            android.graphics.PorterDuff.Mode.SRC_IN);
+                resources.getColor(R.color.tmp_murcia),
+                android.graphics.PorterDuff.Mode.SRC_IN);
         progressBar.visibility = View.VISIBLE
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -86,6 +84,10 @@ class PlaceFragment : Fragment(R.layout.fragment_place) {
         }
 
         val adapter = StopAdapter(stops!!, routeClickListener)
+
+        recycler_stops.addItemDecoration(DividerItemDecoration(context, 0))
+
+
         recycler_stops.adapter = adapter
 
 

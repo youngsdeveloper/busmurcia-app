@@ -1,16 +1,23 @@
 package com.juice_studio.busmurciaapp.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.juice_studio.busmurciaapp.R
 import com.juice_studio.busmurciaapp.models.Stop
+import kotlinx.android.synthetic.main.fragment_place.*
 import kotlinx.android.synthetic.main.item_stop.view.*
 
 class StopAdapter(var items: List<Stop>, var routeClickListener: RouteClickListener): RecyclerView.Adapter<StopViewHolder>() {
+
+    lateinit var ctx:Context
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StopViewHolder {
+        ctx = parent.context
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_stop, parent, false)
         return StopViewHolder(view)
@@ -22,6 +29,8 @@ class StopAdapter(var items: List<Stop>, var routeClickListener: RouteClickListe
         holder.text_parada.text = stop.name
 
         val routeAdapter = RouteAdapter(stop.getRoutes(),stop, routeClickListener)
+        holder.recycler_lines.addItemDecoration(DividerItemDecoration(ctx, 0))
+
         holder.recycler_lines.adapter = routeAdapter
     }
 
