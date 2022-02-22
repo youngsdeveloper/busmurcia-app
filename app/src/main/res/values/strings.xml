@@ -1,5 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">TMP Murcia</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="tarifas_estudiantes">
+        Precio expedición de tarjeta: 1,00 € que se abonará en el momento de su emisión.
+        \n\n
+        El trayecto en tranvía o bus urbano cuesta 0,50 €.
+        \n\n
+        El trayecto en bus pedanías cuesta 0,85 €.
+        \n\n
+        Transbordo tranvía o bus urbano a bus pedanías: 0,70 €.
+        \n\n
+        Transbordo tranvía a bus urbano (o a la inversa): 0,35 €
+        \n\n
+        Transbordo bus pedanías a tranvía o bus urbano: 0,35 €</string>
+    <string name="tarifa_bono_murcia">
+        Precio expedición de tarjeta: 1,00 € que se abonará en el momento de su emisión.
+        \n\n
+        El trayecto en tranvía o bus urbano cuesta 0,70 €.
+        \n\n
+        El trayecto en bus pedanías cuesta 1,15 €.
+        \n\n
+        Transbordo tranvía o bus urbano a bus pedanías: 0,90 €.
+        \n\n
+        Transbordo tranvía a bus urbano (o a la inversa): 0,45 €
+        \n\n
+        Transbordo bus pedanías a tranvía o bus urbano: 0,45 €</string>
 </resources>

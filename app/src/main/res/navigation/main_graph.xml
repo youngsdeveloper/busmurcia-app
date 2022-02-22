@@ -16,9 +16,6 @@
         <action
             android:id="@+id/action_placesFragment_to_newPlaceFragment"
             app:destination="@id/newPlaceFragment" />
-        <action
-            android:id="@+id/action_placesFragment_to_bonosFragment"
-            app:destination="@id/bonosFragment" />
     </fragment>
     <fragment
         android:id="@+id/placeFragment"
@@ -96,6 +93,11 @@
     <fragment
         android:id="@+id/bonosFragment"
         android:name="com.juice_studio.busmurciaapp.fragments.BonosFragment"
-        android:label="fragment_bonos"
+        android:label="Bonos y tarifas"
         tools:layout="@layout/fragment_bonos" />
+    <fragment
+        android:id="@+id/lineasFragment"
+        android:name="com.juice_studio.busmurciaapp.fragments.LineasFragment"
+        android:label="Lineas"
+        tools:layout="@layout/fragment_lineas" />
 </navigation>

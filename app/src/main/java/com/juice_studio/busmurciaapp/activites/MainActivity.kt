@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.fragment_container_view) as NavHostFragment
         val navController = navHostFragment.navController
 
-        val appBarConfiguration = AppBarConfiguration(navController.graph)
+        val appBarConfiguration = AppBarConfiguration(setOf(R.id.placesFragment, R.id.bonosFragment, R.id.lineasFragment))
         topAppBar.setupWithNavController(navController, appBarConfiguration)
         setSupportActionBar(topAppBar)
 
@@ -36,14 +36,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         val bottom_navigation = bottomNavigationView
-        bottom_navigation.setOnNavigationItemReselectedListener { item ->
-            when (item.itemId) {
-                R.id.page_bonos -> {
-                    // Respond to navigation item 1 reselection
-                    navController.navigate(R.id.action_placesFragment_to_bonosFragment)
-                }
-            }
-        }
+        bottom_navigation.setupWithNavController(navController)
     }
 
 

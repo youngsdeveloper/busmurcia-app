@@ -13,12 +13,14 @@ import kotlinx.android.synthetic.main.item_line.view.*
 import kotlinx.android.synthetic.main.item_route.view.*
 import kotlinx.android.synthetic.main.item_stop.view.*
 
-class RouteAdapter(var items: List<Route>, var stop: Stop, var routeClickListener: RouteClickListener): RecyclerView.Adapter<RouteViewHolder>() {
+class RouteAdapter(var items: List<Route>, var routeClickListener: RouteClickListener): RecyclerView.Adapter<RouteViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RouteViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_route, parent, false)
         return RouteViewHolder(view)
     }
+
+    var stop:Stop? = null
 
     override fun onBindViewHolder(holder: RouteViewHolder, position: Int) {
 
@@ -36,7 +38,7 @@ class RouteAdapter(var items: List<Route>, var stop: Stop, var routeClickListene
 
 
 interface RouteClickListener {
-    fun onRouteClick(route: Route, stop: Stop)
+    fun onRouteClick(route: Route, stop: Stop?)
 }
 
 

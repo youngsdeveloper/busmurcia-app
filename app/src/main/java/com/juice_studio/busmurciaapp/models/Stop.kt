@@ -24,8 +24,11 @@ data class Stop(
     fun getRoutes():List<Route>{
         val routes = mutableListOf<Route>()
         val lines_by_route = getLinesByRoute()
+        if(lines_by_route.isEmpty()){
+            return mutableListOf();
+        }
         for (route in lines_by_route){
-            val route = Route(route.key, route.value)
+            val route = Route(route.key, route.value, null)
             routes.add(route)
         }
         return routes

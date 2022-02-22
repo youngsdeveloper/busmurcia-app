@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/page_1"
+        android:id="@+id/placesFragment"
         android:enabled="true"
         android:title="Mis sitios"
         android:icon="@drawable/ic_place"/>
 
     <item
-        android:id="@+id/page_2"
+        android:id="@+id/lineasFragment"
         android:enabled="true"
         android:title="Lineas"
         android:icon="@drawable/ic_route"/>
@@ -20,7 +20,7 @@
         android:title="Mapa"/>-->
 
     <item
-        android:id="@+id/page_bonos"
+        android:id="@+id/bonosFragment"
         android:enabled="true"
         android:icon="@drawable/ic_card"
         android:title="Bonos"/>

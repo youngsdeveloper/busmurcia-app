@@ -11,12 +11,16 @@ import kotlin.math.abs
 data class Route(
         val id: Int,
         val lines: List<Line>,
+        val custom_headsign: String?,
 ): Parcelable{
     fun getRouteNameForHumans():String{
         return "L$id - ${getRouteHeadsign()}"
     }
 
     fun getRouteHeadsign():String{
+        if(!custom_headsign.isNullOrEmpty()){
+            return custom_headsign
+        }
         return lines[0].headsign
     }
 
