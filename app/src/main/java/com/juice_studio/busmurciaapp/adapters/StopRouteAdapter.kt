@@ -2,6 +2,7 @@ package com.juice_studio.busmurciaapp.adapters
 
 import android.content.Context
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -127,11 +128,13 @@ class StopRouteAdapter(var items: List<Stop>, var context: Context): RecyclerVie
     override fun getItemCount(): Int = items.size
 
 
+    fun loadActive(name: String){
+        items.firstOrNull{ stop -> stop.name == name }?.let { active -> loadActive(active) }
+    }
+
     fun loadActive(stop: Stop){
         var index = items.indexOf(stop)
-
-        //Toast.makeText(context, "Stop: "  + stop.toString() + "Index: " + index, Toast.LENGTH_LONG).show()
-
+        
         if(index!=-1){
             loadActive(index)
         }

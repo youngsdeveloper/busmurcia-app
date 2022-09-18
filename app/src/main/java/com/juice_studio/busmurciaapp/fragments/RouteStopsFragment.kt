@@ -238,10 +238,6 @@ import kotlin.random.Random
 
 
 
-        //Toast.makeText(requireContext(), stops.toString(), Toast.LENGTH_LONG).show()
-        //Toast.makeText(requireContext(), route.lines.toString(), Toast.LENGTH_LONG).show()
-
-
 
         adapter.stopClickListener = object : StopClickListener {
 
@@ -257,7 +253,6 @@ import kotlin.random.Random
 
                     if(call_stop.isSuccessful){
                         val stops = call_stop.body();
-
 
 
                         val requested_stop = stops!!.filter { stp -> stp.id == stop.id }[0]
@@ -358,12 +353,9 @@ import kotlin.random.Random
         }
 
         if(stops.isNotEmpty() && load_active){
+
             args.stop?.let { stop ->
-                if(adapter.active_item == null){
-                    adapter.loadActive(stop)
-                }else{
-                    adapter.loadActive(adapter.active_item!!)
-                }
+                adapter.loadActive(stop.name)
             }
 
         }
@@ -400,8 +392,12 @@ import kotlin.random.Random
              }
          }
 
-         downloadRouteStops(route, false)
+         downloadRouteStops(route, true)
+         // FIX: Load active by name
+         // Cant search same stop for other direction
 
+
+         /*
          if(old_active!=null){
              if(adapter.items.isNotEmpty()){
                  var stop_other_dir = adapter.items.filter { stp -> stp.name.contains(old_active.name) }
@@ -411,7 +407,7 @@ import kotlin.random.Random
                  }
                  //Toast.makeText(requireContext(), stop_other_dir.toString(), Toast.LENGTH_LONG).show()
              }
-
          }
+         */
      }
 }
