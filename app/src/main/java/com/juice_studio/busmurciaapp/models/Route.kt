@@ -9,9 +9,10 @@ import kotlin.math.abs
 
 @Parcelize
 data class Route(
-        val id: Int,
-        val lines: List<Line>,
-        val custom_headsign: String?,
+    val id: Int,
+    val lines: List<Line>,
+    val custom_headsign: String?,
+    var direction: Int=1,
 ): Parcelable{
     fun getRouteNameForHumans():String{
         return "L$id - ${getRouteHeadsign()}"
@@ -25,6 +26,7 @@ data class Route(
     }
 
     fun getSynopticInRoute():List<String>{
+
         return lines.map{ line -> line.synoptic}.distinct()
     }
 
@@ -76,5 +78,15 @@ data class Route(
             }
         }
         return min_hour
+    }
+
+
+    // Fix direction differents ids.
+    fun getRealDirection():Int{
+        if(lines.isNotEmpty()){
+            return lines.first().direction;
+        }
+
+        return direction;
     }
 }

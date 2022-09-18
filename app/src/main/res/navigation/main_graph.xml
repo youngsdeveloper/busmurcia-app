@@ -76,10 +76,12 @@
             app:argType="string" />
         <argument
             android:name="stop"
-            app:argType="com.juice_studio.busmurciaapp.models.Stop" />
+            app:argType="com.juice_studio.busmurciaapp.models.Stop"
+            app:nullable="true" />
         <argument
             android:name="stop_name"
-            app:argType="string" />
+            app:argType="string"
+            app:nullable="true" />
 
         <argument
             android:name="synoptics"
@@ -99,5 +101,9 @@
         android:id="@+id/lineasFragment"
         android:name="com.juice_studio.busmurciaapp.fragments.LineasFragment"
         android:label="Lineas"
-        tools:layout="@layout/fragment_lineas" />
+        tools:layout="@layout/fragment_lineas" >
+        <action
+            android:id="@+id/action_lineasFragment_to_routeStopsFragment"
+            app:destination="@id/routeStopsFragment" />
+    </fragment>
 </navigation>

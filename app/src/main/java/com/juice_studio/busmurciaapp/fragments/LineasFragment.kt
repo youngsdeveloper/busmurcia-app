@@ -16,6 +16,12 @@ import kotlinx.android.synthetic.main.fragment_lineas.*
 
 class LineasFragment : Fragment(R.layout.fragment_lineas) {
 
+    private fun openRouteStops(r: Route){
+        val action = LineasFragmentDirections.actionLineasFragmentToRouteStopsFragment(r, r.id.toString(), null, null, arrayOf())
+        findNavController().navigate(action)
+
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -23,6 +29,7 @@ class LineasFragment : Fragment(R.layout.fragment_lineas) {
         val routeClickListener = object : RouteClickListener {
             override fun onRouteClick(r: Route, s: Stop?) {
 
+                openRouteStops(r)
 
 
             }

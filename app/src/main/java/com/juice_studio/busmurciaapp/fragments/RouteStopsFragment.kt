@@ -46,7 +46,7 @@ import kotlin.random.Random
 
     lateinit var adapter:StopRouteAdapter
 
-    private var synoptics = mutableListOf<String>()
+    private var synoptics = mutableListOf<String>();
 
 
      override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,7 +69,10 @@ import kotlin.random.Random
 
          return super.onOptionsItemSelected(item)
      }
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+     private var has_to_download_synoptic = false;
+
+     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val route = args.route
@@ -77,9 +80,19 @@ import kotlin.random.Random
 
         this.synoptics = args.synoptics.toMutableList()
 
-        text_headsign.text = route.lines[0].headsign
+        if(route.lines.isNotEmpty()){
+            text_headsign.text = route.lines[0].headsign
+        }else{
+            text_headsign.text = ""
+        }
+        //
 
-        loadSynoptic(route)
+         if(route.getSynopticInRoute().isEmpty()){
+             has_to_download_synoptic = true;
+         }else{
+             loadSynoptic(route)
+         }
+
         downloadRouteStops(route);
 
         adapter = StopRouteAdapter(mutableListOf(), requireContext())
@@ -119,6 +132,37 @@ import kotlin.random.Random
         }
     }
 
+     private fun loadSynoptic(synps: List<String>){
+         val onCheckedListener = object: CompoundButton.OnCheckedChangeListener{
+             override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+                 //updateHours();
+                 //downloadLocalRealTimeData()
+
+                 if(isChecked){
+                     synoptics.add(buttonView?.tag as String)
+                 }else{
+                     synoptics.remove(buttonView?.tag as String)
+                 }
+
+                 loadRouteStop(stopRoutes);
+             }
+         }
+
+         for(synoptic in synps){
+             val chip = layoutInflater.inflate(
+                 R.layout.layout_chip_choice,
+                 chip_group_synoptic,
+                 false
+             ) as Chip
+             chip.text = "L${route.id} - ${synoptic}"
+             chip.tag = synoptic
+             chip.isChecked = synoptics.contains(synoptic)
+             chip.setOnCheckedChangeListener(onCheckedListener)
+             chip_group_synoptic.addView(chip)
+             chipList.add(chip)
+         }
+     }
+
     private fun downloadRouteStops(route: Route, load_active:Boolean=true){
 
         this.route = route
@@ -126,6 +170,8 @@ import kotlin.random.Random
         loading_stops.indeterminateDrawable.setColorFilter(
                 resources.getColor(R.color.tmp_murcia),
                 android.graphics.PorterDuff.Mode.SRC_IN);
+
+
 
         loading_stops.visibility = View.VISIBLE
         recycler_stops.visibility = View.GONE
@@ -158,8 +204,15 @@ import kotlin.random.Random
 
         this.stopRoutes = routes
 
+        if(has_to_download_synoptic){
+            synoptics = stopRoutes.map { sr -> sr.synoptic }.distinct().toMutableList()
+            loadSynoptic(synoptics)
+            has_to_download_synoptic = false;
+        }
+
+
         val sr = routes
-                .filter { stopRoute ->  stopRoute.direction == route.lines[0].direction}
+                .filter { stopRoute ->  stopRoute.direction == route.getRealDirection()}
                 .filter { stopRoute ->  synoptics.contains(stopRoute.synoptic)}
 
         val stops = sr
@@ -305,11 +358,14 @@ import kotlin.random.Random
         }
 
         if(stops.isNotEmpty() && load_active){
-            if(adapter.active_item == null){
-                adapter.loadActive(args.stop)
-            }else{
-                adapter.loadActive(adapter.active_item!!)
+            args.stop?.let { stop ->
+                if(adapter.active_item == null){
+                    adapter.loadActive(stop)
+                }else{
+                    adapter.loadActive(adapter.active_item!!)
+                }
             }
+
         }
 
 
@@ -328,18 +384,32 @@ import kotlin.random.Random
      private fun change_direction(){
          val old_active = adapter.active_item
 
-         if(route.lines[0].direction==1){
-             route.lines[0].direction = 2;
+         if(!route.lines.isEmpty()){
+             if(route.lines[0].direction==1){
+                 route.lines[0].direction = 2;
+                 route.direction = 2;
+             }else{
+                 route.lines[0].direction = 1;
+                 route.direction = 1;
+             }
          }else{
-             route.lines[0].direction = 1;
+             if(route.direction==1){
+                 route.direction=2;
+             }else{
+                 route.direction=1;
+             }
          }
+
          downloadRouteStops(route, false)
 
          if(old_active!=null){
              if(adapter.items.isNotEmpty()){
-                 val stop_other_dir = adapter.items.filter { stp -> stp.name.contains(old_active.name) }[0]
+                 var stop_other_dir = adapter.items.filter { stp -> stp.name.contains(old_active.name) }
+
+                 if(stop_other_dir.size>0){
+                     adapter.loadActive(stop_other_dir[0])
+                 }
                  //Toast.makeText(requireContext(), stop_other_dir.toString(), Toast.LENGTH_LONG).show()
-                 adapter.loadActive(stop_other_dir)
              }
 
          }
