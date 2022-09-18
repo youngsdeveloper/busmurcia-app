@@ -134,7 +134,7 @@ class StopRouteAdapter(var items: List<Stop>, var context: Context): RecyclerVie
 
     fun loadActive(stop: Stop){
         var index = items.indexOf(stop)
-        
+
         if(index!=-1){
             loadActive(index)
         }

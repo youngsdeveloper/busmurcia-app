@@ -282,17 +282,21 @@ import kotlin.random.Random
                             tmpAdapter.activeSynoptics = synoptics
                             tmpAdapter.realtime_hours = realtime_hours!!
 
-                            requireActivity().runOnUiThread {
+
+                            if(isAdded){
+                                requireActivity().runOnUiThread {
 
 
 
-                                var status_min = tmpAdapter.getRealTimeData().status_min!!
-                                if(status_min==null){
-                                    status_min = "No info"
+                                    var status_min = tmpAdapter.getRealTimeData().status_min!!
+                                    if(status_min==null){
+                                        status_min = "No info"
+                                    }
+
+                                    listener.onStopRealtimeLoaded(stop, status_min, requested_route)
                                 }
-
-                                listener.onStopRealtimeLoaded(stop, status_min, requested_route)
                             }
+
 
                         }
 

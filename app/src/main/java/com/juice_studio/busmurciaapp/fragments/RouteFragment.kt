@@ -230,15 +230,19 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
 
 
-            requireActivity().runOnUiThread {
+            if(isAdded){
+                requireActivity().runOnUiThread {
 
-                if(call.isSuccessful){
-                    val realtime_hours = call.body();
-                    realtime_hours?.let { realtime_hours ->
-                        loadRealTimeData(realtime_hours)
+                    if(call.isSuccessful){
+                        val realtime_hours = call.body();
+                        realtime_hours?.let { realtime_hours ->
+                            loadRealTimeData(realtime_hours)
+                        }
                     }
                 }
             }
+
+
         }
     }
 
