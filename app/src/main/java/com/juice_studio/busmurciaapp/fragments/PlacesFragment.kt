@@ -155,10 +155,25 @@ class PlacesFragment : Fragment(R.layout.fragment_places) {
             var places = appDatabase.placeDao().getAllPlaces()
 
 
-            requireActivity().runOnUiThread {
-                placesAdapter.items =places.map { placeEntity -> placeEntity.toPlace() }
-                placesAdapter.notifyDataSetChanged()
+            if(places.isNotEmpty()){
+
+
+                requireActivity().runOnUiThread {
+
+                    recycler_places.visibility = View.VISIBLE;
+                    text_empty.visibility = View.GONE;
+
+                    placesAdapter.items =places.map { placeEntity -> placeEntity.toPlace() }
+                    placesAdapter.notifyDataSetChanged()
+                }
+            }else{
+
+                requireActivity().runOnUiThread {
+                    text_empty.visibility = View.VISIBLE;
+                }
             }
+
+
         }
     }
 

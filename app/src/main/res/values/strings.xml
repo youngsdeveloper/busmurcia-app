@@ -11,6 +11,17 @@
         \n\n
         Por favor, vuelve a probar en otro momento.
     </string>
+
+    <string name="empty_places">
+        Aquí puedes crear tus propios sitios favoritos. En esta sección
+        podrás ver rápidamente los puntos que sueles frecuentar.
+        \n\n
+        Por ejemplo: Casa, Trabajo, Universidad, Hospital, Plaza Circular...
+        \n\n
+        Puedes crear tantos como quieras y ponerles el nombre que quieras.
+        \n\n
+        Usa el botón \"+\" de abajo a la derecha.
+    </string>
     <string name="hint_synoptic_sublines">
         AYUDA: Elige las sublineas que te interesen. Si hay más de una activada, se mostrarán las paradas
         comunes en esas sublineas.
