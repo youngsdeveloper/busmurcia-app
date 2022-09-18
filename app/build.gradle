@@ -94,6 +94,8 @@ dependencies {
     // GIF
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.25'
 
+    // Spotlight
+
 
     // Add the dependencies for any other desired Firebase products
     // https://firebase.google.com/docs/android/setup#available-libraries

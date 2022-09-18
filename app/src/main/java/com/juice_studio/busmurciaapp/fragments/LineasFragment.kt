@@ -17,7 +17,9 @@ import kotlinx.android.synthetic.main.fragment_lineas.*
 class LineasFragment : Fragment(R.layout.fragment_lineas) {
 
     private fun openRouteStops(r: Route){
-        val action = LineasFragmentDirections.actionLineasFragmentToRouteStopsFragment(r, r.id.toString(), null, null, arrayOf())
+
+
+        val action = LineasFragmentDirections.actionLineasFragmentToRouteStopsFragment(r, r.id.toString(), null, null, arrayOf(), true)
         findNavController().navigate(action)
 
     }

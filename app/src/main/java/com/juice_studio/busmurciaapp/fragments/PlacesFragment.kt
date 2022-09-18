@@ -10,6 +10,7 @@ import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.view.View
+import android.view.animation.DecelerateInterpolator
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -34,6 +35,7 @@ import kotlinx.android.synthetic.main.fragment_places.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+
 
 
 class PlacesFragment : Fragment(R.layout.fragment_places) {
@@ -143,6 +145,8 @@ class PlacesFragment : Fragment(R.layout.fragment_places) {
                     }
         }
 
+
+        loadSpotlight()
     }
 
     private fun loadPlaces(){
@@ -156,6 +160,11 @@ class PlacesFragment : Fragment(R.layout.fragment_places) {
                 placesAdapter.notifyDataSetChanged()
             }
         }
+    }
+
+    private fun loadSpotlight(){
+
+
     }
 
 

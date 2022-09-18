@@ -103,7 +103,7 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
     }
 
     private fun openRouteStops(){
-        val action = RouteFragmentDirections.actionRouteFragmentToRouteStopsFragment(args.route, args.routeTitle, args.stop, args.stopName, getActiveSynoptics().toTypedArray())
+        val action = RouteFragmentDirections.actionRouteFragmentToRouteStopsFragment(args.route, args.routeTitle, args.stop, args.stopName, getActiveSynoptics().toTypedArray(), false)
         findNavController().navigate(action)
 
     }

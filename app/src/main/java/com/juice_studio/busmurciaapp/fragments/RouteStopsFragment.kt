@@ -130,6 +130,9 @@ import kotlin.random.Random
             chip_group_synoptic.addView(chip)
             chipList.add(chip)
         }
+
+
+
     }
 
      private fun loadSynoptic(synps: List<String>){
@@ -161,6 +164,13 @@ import kotlin.random.Random
              chip_group_synoptic.addView(chip)
              chipList.add(chip)
          }
+
+         Log.d("fromLines", args.fromLines.toString())
+         if(args.fromLines && synps.size>1){
+             text_hint_synoptic.visibility = View.VISIBLE
+         }else{
+             text_hint_synoptic.visibility = View.GONE
+         }
      }
 
     private fun downloadRouteStops(route: Route, load_active:Boolean=true){
@@ -190,6 +200,14 @@ import kotlin.random.Random
                     val routes = call.body();
                     routes?.let { routes ->
                         loadRouteStop(routes, load_active)
+                    }
+
+                    if (routes != null) {
+                        if(routes.isEmpty()){
+                            text_empty.visibility = View.VISIBLE
+                        }
+                    }else{
+                        text_empty.visibility = View.VISIBLE
                     }
                 }
             }

@@ -68,7 +68,11 @@ class PlaceFragment : Fragment(R.layout.fragment_place) {
     private fun loadPlace(stops: List<Stop>){
         // Ok, cargar paradas en el RecyclerView
         //Toast.makeText(requireContext(), "Hola: $stops", Toast.LENGTH_LONG).show();
-        requireActivity().title = args.place.name
+
+
+        if(isAdded){
+            requireActivity().title = args.place.name
+        }
 
         progressBar.visibility = View.GONE
 

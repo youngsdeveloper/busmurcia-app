@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/placesFragment"
         android:name="com.juice_studio.busmurciaapp.fragments.PlacesFragment"
-        android:label="TMP Murcia"
+        android:label="BUS Murcia - En tiempo real"
         tools:layout="@layout/fragment_places" >
         <action
             android:id="@+id/action_placesFragment_to_placeFragment"
@@ -89,6 +89,9 @@
         <action
             android:id="@+id/action_routeStopsFragment_to_routeFragment"
             app:destination="@id/routeFragment" />
+        <argument
+            android:name="from_lines"
+            app:argType="boolean" />
 
 
     </fragment>

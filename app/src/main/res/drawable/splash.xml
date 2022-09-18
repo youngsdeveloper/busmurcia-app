@@ -6,7 +6,7 @@
         tools:drawable="@color/white"></item>
     <item>
         <bitmap
-            android:src="@drawable/logo_tmp"
+            android:src="@drawable/ic_logo"
             android:gravity="center"
             tools:src="null"></bitmap>
     </item>

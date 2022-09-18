@@ -3,8 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/splash.xml" value="0.115" />
+        <entry key="app/src/main/res/layout/fragment_bonos.xml" value="0.24719101123595505" />
         <entry key="app/src/main/res/layout/fragment_lineas.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_place.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_places.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_route.xml" value="0.23846153846153847" />
+        <entry key="app/src/main/res/layout/fragment_route_stops.xml" value="0.22" />
       </map>
     </option>
   </component>

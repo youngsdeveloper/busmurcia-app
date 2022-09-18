@@ -1,8 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">TMP Murcia</string>
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="app_name">BUS Murcia</string>
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string name="empty_line">
+        Esta linea no se encuentra activa hoy, por ese motivo no se
+        puede consultar el recorrido.
+        \n\n
+        Por favor, vuelve a probar en otro momento.
+    </string>
+    <string name="hint_synoptic_sublines">
+        AYUDA: Elige las sublineas que te interesen. Si hay más de una activada, se mostrarán las paradas
+        comunes en esas sublineas.
+    </string>
+    <string name="tarifa_billete_sencillo">
+        Precio: 1,85€.
+        \n\n
+        Opción no recomendada para viajes recurrentes.
+        \n\n
+        NOTA: En este billete no se aplica el 30% descuento del
+        gobierno.
+
+    </string>
     <string name="tarifas_estudiantes">
         Precio expedición de tarjeta: 1,00 € que se abonará en el momento de su emisión.
         \n\n
@@ -14,7 +35,12 @@
         \n\n
         Transbordo tranvía a bus urbano (o a la inversa): 0,35 €
         \n\n
-        Transbordo bus pedanías a tranvía o bus urbano: 0,35 €</string>
+        Transbordo bus pedanías a tranvía o bus urbano: 0,35 €.
+        \n\n
+        Puedes conmprarla en las oficinas de TMP Murcia en Avenida Libertad.
+
+
+    </string>
     <string name="tarifa_bono_murcia">
         Precio expedición de tarjeta: 1,00 € que se abonará en el momento de su emisión.
         \n\n
@@ -26,5 +52,36 @@
         \n\n
         Transbordo tranvía a bus urbano (o a la inversa): 0,45 €
         \n\n
-        Transbordo bus pedanías a tranvía o bus urbano: 0,45 €</string>
+        Transbordo bus pedanías a tranvía o bus urbano: 0,45 €.
+        \n\n
+        Puedes conmprarla en el propio autobús o en las máquinas autoventa del tranvía.
+
+    </string>
+
+    <string name="tarifa_bono_fn">
+        Precio expedición de tarjeta: 1,00 € que se abonará en el momento de su emisión.
+        \n\n
+        El trayecto en tranvía, bus urbano o bus pedanías cuesta 0,50 €.
+        \n\n
+        Transbordo (en cualquiera de los tres transportes): 0,45 €.
+        \n\n
+        3er transbordo: 0,15€
+        \n\n
+        Puedes conmprarla en las oficinas de TMP Murcia en Avenida Libertad.
+
+
+    </string>
+    <string name="tarifa_bono_fn_especial">
+        Precio expedición de tarjeta: 1,00 € que se abonará en el momento de su emisión.
+        \n\n
+        Tarjeta gratuita para beneficiarios del título de Familia Numerosa Especial.
+        \n\n
+        Se entrega cargada con 900 viajes.
+        \n\n
+        Puedes conmprarla en las oficinas de TMP Murcia en Avenida Libertad.
+
+
+
+
+    </string>
 </resources>
