@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/placesFragment"
-        android:name="com.juice_studio.busmurciaapp.fragments.PlacesFragment"
+        android:name="com.youngsdeveloper.bus_murcia.fragments.PlacesFragment"
         android:label="BUS Murcia - En tiempo real"
         tools:layout="@layout/fragment_places" >
         <action
@@ -19,11 +19,11 @@
     </fragment>
     <fragment
         android:id="@+id/placeFragment"
-        android:name="com.juice_studio.busmurciaapp.fragments.PlaceFragment"
+        android:name="com.youngsdeveloper.bus_murcia.fragments.PlaceFragment"
         android:label="{place_name}"
         tools:layout="@layout/fragment_place" >
         <argument android:name="place"
-            app:argType="com.juice_studio.busmurciaapp.models.Place" />
+            app:argType="com.youngsdeveloper.bus_murcia.models.Place" />
 
         <argument
             android:name="place_name"
@@ -35,19 +35,19 @@
     </fragment>
     <fragment
         android:id="@+id/routeFragment"
-        android:name="com.juice_studio.busmurciaapp.fragments.RouteFragment"
+        android:name="com.youngsdeveloper.bus_murcia.fragments.RouteFragment"
         android:label="L{route_title} ({stop_name})"
 
         tools:layout="@layout/fragment_route" >
         <argument
             android:name="route"
-            app:argType="com.juice_studio.busmurciaapp.models.Route" />
+            app:argType="com.youngsdeveloper.bus_murcia.models.Route" />
         <argument
             android:name="route_title"
             app:argType="string" />
         <argument
             android:name="stop"
-            app:argType="com.juice_studio.busmurciaapp.models.Stop" />
+            app:argType="com.youngsdeveloper.bus_murcia.models.Stop" />
         <argument
             android:name="stop_name"
             app:argType="string" />
@@ -58,25 +58,25 @@
     </fragment>
     <fragment
         android:id="@+id/newPlaceFragment"
-        android:name="com.juice_studio.busmurciaapp.fragments.NewPlaceFragment"
+        android:name="com.youngsdeveloper.bus_murcia.fragments.NewPlaceFragment"
         android:label="Nuevo sitio"
         tools:layout="@layout/fragment_new_place" />
     <fragment
         android:id="@+id/routeStopsFragment"
-        android:name="com.juice_studio.busmurciaapp.fragments.RouteStopsFragment"
+        android:name="com.youngsdeveloper.bus_murcia.fragments.RouteStopsFragment"
         android:label="Recorrido L{route_title}"
         tools:layout="@layout/fragment_route_stops">
 
 
         <argument
             android:name="route"
-            app:argType="com.juice_studio.busmurciaapp.models.Route" />
+            app:argType="com.youngsdeveloper.bus_murcia.models.Route" />
         <argument
             android:name="route_title"
             app:argType="string" />
         <argument
             android:name="stop"
-            app:argType="com.juice_studio.busmurciaapp.models.Stop"
+            app:argType="com.youngsdeveloper.bus_murcia.models.Stop"
             app:nullable="true" />
         <argument
             android:name="stop_name"
@@ -97,12 +97,12 @@
     </fragment>
     <fragment
         android:id="@+id/bonosFragment"
-        android:name="com.juice_studio.busmurciaapp.fragments.BonosFragment"
+        android:name="com.youngsdeveloper.bus_murcia.fragments.BonosFragment"
         android:label="Bonos y tarifas"
         tools:layout="@layout/fragment_bonos" />
     <fragment
         android:id="@+id/lineasFragment"
-        android:name="com.juice_studio.busmurciaapp.fragments.LineasFragment"
+        android:name="com.youngsdeveloper.bus_murcia.fragments.LineasFragment"
         android:label="Lineas"
         tools:layout="@layout/fragment_lineas" >
         <action

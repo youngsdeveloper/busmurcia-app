@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "1057223509250",
-    "project_id": "latbus-client",
-    "storage_bucket": "latbus-client.appspot.com"
+    "project_number": "998311524539",
+    "project_id": "busmurciaapp",
+    "storage_bucket": "busmurciaapp.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1057223509250:android:a330d6d757a9fcd9c7ae1b",
+        "mobilesdk_app_id": "1:998311524539:android:b9fe3ef74c24ca4e33919e",
         "android_client_info": {
-          "package_name": "com.juice_studio.busmurciaapp"
+          "package_name": "com.youngsdeveloper.bus_murcia"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1057223509250-hi059jccl77vtph7e1linuqos69b83mi.apps.googleusercontent.com",
+          "client_id": "998311524539-sbovlt5gje74v9d3g803fmdrlno10v7l.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBWrIYaQFMV24HSgQUiryaMMzFJ6JdTzuI"
+          "current_key": "AIzaSyBBpCYr4hkxIzkp_Cp4cu4URduDDLAv87U"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1057223509250-hi059jccl77vtph7e1linuqos69b83mi.apps.googleusercontent.com",
+              "client_id": "998311524539-sbovlt5gje74v9d3g803fmdrlno10v7l.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
