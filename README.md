@@ -39,6 +39,8 @@ En cuanto a la información en tiempo real, se utiliza una forma diferente de ca
 
 El valor del retraso acumulado del autobús lo gestiona directamente la API de TMP y se actualiza en cada parada.
 
+![Arquitectura](./docs/images/arquitectura.png)
+
 
 ## Features
 
