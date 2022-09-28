@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.youngsdeveloper.bus_murcia.R
 import com.youngsdeveloper.bus_murcia.models.Stop
 import kotlinx.android.synthetic.main.item_stop.view.*
+import kotlin.streams.toList
 
 class StopAdapter(var items: List<Stop>, var routeClickListener: RouteClickListener): RecyclerView.Adapter<StopViewHolder>() {
 
@@ -27,7 +28,11 @@ class StopAdapter(var items: List<Stop>, var routeClickListener: RouteClickListe
         val stop = items[position]
         holder.text_parada.text = stop.name
 
-        val routeAdapter = RouteAdapter(stop.getRoutes(),routeClickListener)
+
+
+        val routesSorted = stop.getRoutes().stream().sorted { r1, r2 -> r1.id.compareTo(r2.id) }.toList()
+
+        val routeAdapter = RouteAdapter(routesSorted,routeClickListener)
         routeAdapter.stop = stop
         holder.recycler_lines.addItemDecoration(DividerItemDecoration(ctx, 0))
 

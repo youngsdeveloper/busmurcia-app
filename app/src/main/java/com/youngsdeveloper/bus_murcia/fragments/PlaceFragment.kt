@@ -91,6 +91,9 @@ class PlaceFragment : Fragment(R.layout.fragment_place) {
             }
         }
 
+
+
+
         val adapter = StopAdapter(stops!!, routeClickListener)
 
         recycler_stops.addItemDecoration(DividerItemDecoration(context, 0))
