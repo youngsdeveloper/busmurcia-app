@@ -10,13 +10,13 @@ plugins {
 }
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.youngsdeveloper.bus_murcia"
         minSdkVersion 24
-        targetSdkVersion 31
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
 
@@ -89,6 +89,8 @@ dependencies {
     // When using the BoM, don't specify versions in Firebase dependencies
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
+
+    implementation 'com.google.firebase:firebase-messaging-ktx'
 
 
     // GIF

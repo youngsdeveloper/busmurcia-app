@@ -90,9 +90,10 @@
         Se entrega cargada con 900 viajes.
         \n\n
         Puedes conmprarla en las oficinas de TMP Murcia en Avenida Libertad.
+    </string>
 
-
-
-
+    <string name="notifications_request">
+        Usaremos las notificaciones para enviarte información de última hora sobre el
+        servicio de bus de la Murcia y pedanías.
     </string>
 </resources>
