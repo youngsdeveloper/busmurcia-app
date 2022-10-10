@@ -1,24 +1,36 @@
 package com.youngsdeveloper.bus_murcia.fragments
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.InputType
 import android.view.*
 import android.widget.CompoundButton
+import android.widget.EditText
 import androidx.core.content.ContextCompat
+import androidx.core.view.marginLeft
+import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.input.input
 import com.google.android.material.chip.Chip
 import com.youngsdeveloper.bus_murcia.R
 import com.youngsdeveloper.bus_murcia.adapters.HourAdapter
 import com.youngsdeveloper.bus_murcia.adapters.ITMPAdapter
 import com.youngsdeveloper.bus_murcia.adapters.TMPAdapter
 import com.youngsdeveloper.bus_murcia.io.ApiAdapter
+import com.youngsdeveloper.bus_murcia.local.AppDatabase
+import com.youngsdeveloper.bus_murcia.models.Place
 import com.youngsdeveloper.bus_murcia.models.RealTimeHour
 import com.youngsdeveloper.bus_murcia.models.Route
+import com.youngsdeveloper.bus_murcia.models.toPlaceEntity
+import kotlinx.android.synthetic.main.fragment_new_place.*
 import kotlinx.android.synthetic.main.fragment_route.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -94,6 +106,7 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
 
         when(item.itemId){
+            R.id.action_favorito -> saveStopAsFavouritePlace()
             R.id.action_reload_route -> downloadRemotelRealTimeData()
             R.id.action_see_route -> openRouteStops()
         }
@@ -316,6 +329,52 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
         return Collections.unmodifiableList(synoptics)*/
         return synoptics;
+    }
+
+
+    private fun storeFavStop(place_name:String){
+        CoroutineScope(Dispatchers.IO).launch {
+
+            val appDatabase = AppDatabase
+                .getDatabase(requireContext())
+
+
+            val stop = args.stop;
+
+            val place = Place(-1, place_name, stop.latitude, stop.longitude)
+            appDatabase.placeDao()
+                .savePlace(place.toPlaceEntity())
+
+            requireActivity().runOnUiThread {
+                showSuccesPlaceSaved()
+            }
+        }
+    }
+
+
+    private fun showSuccesPlaceSaved(){
+        MaterialDialog(requireContext()).show {
+            icon(R.drawable.ic_star_red)
+            title(text = "Sitio favorito guardado.")
+            message(text = "¡Listo!\n\nYa has agregado este sitio a tu lista de sitios favoritos.\n\nPuedes verlo en la pantalla principal.")
+            positiveButton( text = "De acuerdo")
+        }
+    }
+    private fun saveStopAsFavouritePlace(){
+
+
+        MaterialDialog(requireContext()).show {
+            icon(R.drawable.ic_star_red)
+            title(text = "Guardar parada en sitios favoritos.")
+            message(text = "Estas a punto de guardar la ubicación de esta parada en tus sitios favoritos.\n\nPuedes ponerle el nombre que desees.")
+
+            input { dialog, text ->
+                // Text submitted with the action button
+                storeFavStop(text.toString())
+            }
+            negativeButton(text = "Cancelar")
+            positiveButton( R.string.dialog_save_fav_positive_button)
+        }
     }
 
 

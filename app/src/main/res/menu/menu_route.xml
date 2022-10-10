@@ -4,9 +4,16 @@
     >
 
 
+
+    <item
+        android:id="@+id/action_favorito"
+        android:title="Favorito"
+
+        android:icon="@drawable/ic_star"
+        app:showAsAction="always" />
     <item
         android:id="@+id/action_see_route"
-        android:title="Recargar"
+        android:title="Recorrido"
 
         android:icon="@drawable/ic_route"
         app:showAsAction="always" />

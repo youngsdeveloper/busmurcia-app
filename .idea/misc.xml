@@ -11,6 +11,7 @@
         <entry key="app/src/main/res/layout/fragment_places.xml" value="0.18" />
         <entry key="app/src/main/res/layout/fragment_route.xml" value="0.23846153846153847" />
         <entry key="app/src/main/res/layout/fragment_route_stops.xml" value="0.22" />
+        <entry key="app/src/main/res/menu/menu_route.xml" value="0.1" />
       </map>
     </option>
   </component>

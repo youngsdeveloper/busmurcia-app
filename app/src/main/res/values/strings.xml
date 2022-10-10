@@ -104,4 +104,9 @@
         Usaremos las notificaciones para enviarte información de última hora sobre el
         servicio de bus de la Murcia y pedanías.
     </string>
+
+
+    <string name="dialog_save_fav_positive_button">
+        Guardar
+    </string>
 </resources>
