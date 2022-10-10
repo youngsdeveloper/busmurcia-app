@@ -8,6 +8,9 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -64,10 +67,31 @@ class PlacesFragment : Fragment(R.layout.fragment_places) {
 
 
 
+
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater?.inflate(R.menu.menu_home, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.action_help -> openFAQ()
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun openFAQ(){
+        val action = PlacesFragmentDirections.actionPlacesFragmentToFAQFragment()
+        findNavController().navigate(action)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
 
+        setHasOptionsMenu(true)
 
 
         //Load Database

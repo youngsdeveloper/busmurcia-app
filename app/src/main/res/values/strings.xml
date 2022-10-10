@@ -109,4 +109,99 @@
     <string name="dialog_save_fav_positive_button">
         Guardar
     </string>
+
+
+    <string name="faq_1_question">
+    ¿Cómo obtiene la app información en tiempo real?
+    </string>
+    <string name="faq_1_answer">
+    La app usa la información que los autobuses envían en tiempo real sobre su ubicación en cada instante y el retraso/adelanto que llevan con respecto a sus horarios programados.
+
+\n\nEsta app realiza las predicciones de tiempo con un método diferente a la antigua app de Latbus, siendo mucho más preciso.
+    </string>
+
+    <string name="faq_2_question">
+    ¿Por qué no aparece mi bus en tiempo real?
+    </string>
+    <string name="faq_2_answer">
+        Las líneas de bus tienen una parada inicial, llamada “cabecera”. Los horarios en tiempo real solo aparecen cuando el bus ha iniciado la ruta, ya que si están parados no tienen activado el sistema.
+        \n\n
+        Una vez que te has asegurado de que la ruta ha comenzado, si no aparece la información en tiempo real puede ser por distintos motivos:
+        \n\n
+        \t\t- El autobús aún se encuentra muy lejos de la parada que están consultando en tiempo real, un truco muy útil puede ser utilizar la herramienta de recorridos para consultar paradas anteriores.
+        \n\n
+        \t\t- El autobús no tiene encendido el sistema de posicionamiento o no está enviando la señal correctamente.
+
+    </string>
+
+    <string name="faq_3_question">
+    ¿Cómo funcionan los recorridos con sublineas?
+    </string>
+    <string name="faq_3_answer">
+        En los recorridos, las líneas que tengan a su vez sublineas muestran
+        el recorrido común entre todas las sublineas. Por defecto, aparecen habilitados
+        todos los recorridos.
+
+        \n\nSi solo te interesa la informacíón de uno o varios recorridos,
+        puedes marcar/desmarcar las sublineas que necesites para ello.
+    </string>
+
+    <string name="faq_4_question">
+    ¿Cómo funcionan los horarios?
+    </string>
+    <string name="faq_4_answer">
+        La app automáticamente muestra los horarios correspondientes al día actual. Por ejemplo, si es un día laborable los horarios de día laborable. Si es un día festivo, los horarios del día festivo, y así sucesivamente.
+
+        \n\nPor defecto muestra los próximos horarios del día, por ejemplo, si consultas unos horarios en la app a las 11:00 te mostrarán los horarios de las 11:00 en adelante. También te muestra los horarios de los últimos 20 minutos.
+
+        \n\nSi necesitas ver el horario completo, pincha en “Horario completo”
+
+    </string>
+
+    <string name="faq_5_question">
+    ¿Se puede eliminar una sitio marcado como favorito?
+    </string>
+    <string name="faq_5_answer">
+        Si, desde la pantalla principal mantén pulsado unos segundos el botón del sitio y te saldrá la opción de eliminarlo.
+
+
+    </string>
+
+    <string name="faq_6_question">
+    ¿Se puede editar un sitio marcado como favorito?
+
+
+    </string>
+    <string name="faq_6_answer">
+        No, tendrás que eliminar el sitio y crearlo de nuevo.
+    </string>
+
+    <string name="faq_7_question">
+        ¿Cómo puedo agregar un sitio como favorito?
+    </string>
+    <string name="faq_7_answer">
+        Puedes hacerlo seleccionando un punto del mapa, usando el botón "+" de abajo a la derecha.
+        \n\n
+        Otra opción de hacerlo es desde la sección de líneas, buscar la línea y parada que te interesa.
+        \n\n
+        Una vez encuentres la parada que desees guardar cómo favorito, arriba a la derecha tendrás un icono de una estrella, desde donde podrás guardar esta ubicación en favoritos.
+
+    </string>
+
+    <string name="faq_8_question">
+        ¿Quién ha desarrollado esta app?
+    </string>
+    <string name="faq_8_answer">
+    👋 ¡Hola! Soy Enrique, el creador de esta app. También soy usuario habitual del transporte público en Murcia y mi objetivo con este proyecto es intentar facilitar un poco la vida a los que usamos este servicio.
+    \n\n
+    Podeis contactarme a través de mi Twitter: @youngsdeveloper
+    \n\n
+    PD: El código fuente de esta app está publicado en GitHub, el enlace al repositorio lo podéis encontrar en mi Twitter.
+    \n\n
+    ¡Gracias por usar la aplicación! ❤️❤️
+        \n\nAprovecho para agradecer a Ana María, que me ha apoyado en todo momento en este proyecto y sin duda ha sido clave para que salga adelante.
+        \n\nTambien quiero agradecer a Daniel, de Info Transporte Murcia, que ha estado probando y aportando muchas ideas para el proyecto.
+
+
+    </string>
 </resources>

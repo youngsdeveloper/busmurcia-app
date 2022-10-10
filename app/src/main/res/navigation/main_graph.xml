@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_placesFragment_to_newPlaceFragment"
             app:destination="@id/newPlaceFragment" />
+        <action
+            android:id="@+id/action_placesFragment_to_FAQFragment"
+            app:destination="@id/FAQFragment" />
     </fragment>
     <fragment
         android:id="@+id/placeFragment"
@@ -109,4 +112,9 @@
             android:id="@+id/action_lineasFragment_to_routeStopsFragment"
             app:destination="@id/routeStopsFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/FAQFragment"
+        android:name="com.youngsdeveloper.bus_murcia.fragments.FAQFragment"
+        android:label="Preguntas frecuentes"
+        tools:layout="@layout/fragment_faq" />
 </navigation>
