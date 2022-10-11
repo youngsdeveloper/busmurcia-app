@@ -15,10 +15,10 @@ android {
 
     defaultConfig {
         applicationId "com.youngsdeveloper.bus_murcia"
-        minSdkVersion 24
+        minSdkVersion 21
         targetSdkVersion 33
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true

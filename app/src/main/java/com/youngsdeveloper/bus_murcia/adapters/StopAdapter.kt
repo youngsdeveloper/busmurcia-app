@@ -1,6 +1,7 @@
 package com.youngsdeveloper.bus_murcia.adapters
 
 import android.content.Context
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,7 +31,7 @@ class StopAdapter(var items: List<Stop>, var routeClickListener: RouteClickListe
 
 
 
-        val routesSorted = stop.getRoutes().stream().sorted { r1, r2 -> r1.id.compareTo(r2.id) }.toList()
+        val routesSorted = stop.getRoutes().sortedBy { r -> r.id }
 
         val routeAdapter = RouteAdapter(routesSorted,routeClickListener)
         routeAdapter.stop = stop
