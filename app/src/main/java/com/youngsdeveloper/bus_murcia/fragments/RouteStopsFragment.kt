@@ -277,10 +277,20 @@ import kotlinx.coroutines.launch
                         val requested_route = requested_stop.getRoutes().filter{ rt -> rt.id == route.id }[0]
 
                         val stopsList = listOf<String>(stop.id.toString())
+
+
+                        /*
+                        FIX: Direction
                         val linesList = args.route.lines
                                 .filter { line -> synoptics.contains(line.synoptic) }
                                 .filter { line -> line.direction == route.lines[0].direction }
                                 .map { line -> line.id }
+                        */
+                        val linesList = synoptics
+                            .map { synoptic -> "${route.id}.${synoptic}.${route.getRealDirection()}"}
+
+
+                        Log.d("lines_list", linesList.toString())
 
 
                         val call = ApiAdapter

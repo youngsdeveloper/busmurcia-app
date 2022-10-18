@@ -1,6 +1,7 @@
 package com.youngsdeveloper.bus_murcia.models
 
 import android.os.Parcelable
+import android.util.Log
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 import kotlin.math.abs
@@ -63,10 +64,16 @@ data class Route(
 
     fun findNearestHour(synoptic:String, timeBase: Date):Hour?{
         var hours = getLineHours()
-        hours = hours.filter { h -> h.synoptic.equals(synoptic) }
+
+        Log.d("hours", hours.toString())
+        Log.d("houts synop to filter", synoptic)
+
+        hours = hours.filter { h -> h.synoptic == synoptic }
 
         var min:Long?=null
         var min_hour: Hour? = null
+
+        Log.d("hours (filtered)", hours.toString())
 
         for(hour in hours){
             val diff = abs(timeBase.time - hour.date.time);
