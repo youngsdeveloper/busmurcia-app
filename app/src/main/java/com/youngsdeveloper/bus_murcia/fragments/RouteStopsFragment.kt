@@ -253,6 +253,7 @@ import kotlinx.coroutines.launch
 
 
 
+        var loading_double = false;
 
         adapter.stopClickListener = object : StopClickListener {
 
@@ -324,6 +325,15 @@ import kotlinx.coroutines.launch
 
 
             override fun onStopDoubleClick(stop: Stop, _route: Route?) {
+
+
+                // prevent crash double click
+
+                if(loading_double){
+                    return;
+                }
+
+                loading_double = true;
 
                 var rt:Route
 

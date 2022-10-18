@@ -8,7 +8,7 @@ data class Stop(
     val id: Integer,
     val name: String,
     val lines: List<Line> = mutableListOf(),
-    val city: String,
+    val city: String?,
     val order: Int,
     val latitude: Double,
     val longitude: Double

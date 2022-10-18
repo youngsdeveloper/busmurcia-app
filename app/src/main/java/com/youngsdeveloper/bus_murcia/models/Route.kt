@@ -8,7 +8,7 @@ import kotlin.math.abs
 @Parcelize
 data class Route(
     val id: Int,
-    val lines: List<Line>,
+    val lines: List<Line> = mutableListOf(),
     val custom_headsign: String?,
     var direction: Int=1,
 ): Parcelable{

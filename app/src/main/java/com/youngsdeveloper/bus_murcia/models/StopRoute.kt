@@ -7,5 +7,5 @@ data class StopRoute(
     val synoptic:String,
     val direction: Int,
     val headsign:String,
-    val stops: List<Stop>
+    val stops: List<Stop> = mutableListOf()
 )
