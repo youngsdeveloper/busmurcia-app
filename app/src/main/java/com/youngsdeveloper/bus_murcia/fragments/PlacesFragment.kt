@@ -154,12 +154,17 @@ class PlacesFragment : Fragment(R.layout.fragment_places) {
         }
 
         button_location.setOnClickListener {
+
+
             checkLocationPermission()
+
             SmartLocation.with(context).location()
                     .oneFix()
                     .start { location ->
+
                         val place = Place(-1, "Tu ubicación", location.latitude, location.longitude)
                         val action = PlacesFragmentDirections.actionPlacesFragmentToPlaceFragment(place, place.name)
+                        action.forceDownload = true
                         findNavController().navigate(action)
 
                     }

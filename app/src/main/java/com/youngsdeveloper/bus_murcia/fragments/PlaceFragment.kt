@@ -159,6 +159,11 @@ class PlaceFragment : Fragment(R.layout.fragment_place) {
                 need_to_download = true;
             }
 
+            // Force download
+            if(args.forceDownload){
+                need_to_download = true;
+            }
+
             if(!need_to_download){
                 json?.let { json ->
                     val stops = Gson().fromJson(json, Array<Stop>::class.java).toList()

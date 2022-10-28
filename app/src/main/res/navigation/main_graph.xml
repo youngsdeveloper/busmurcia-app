@@ -35,6 +35,10 @@
         <action
             android:id="@+id/action_placeFragment_to_routeFragment"
             app:destination="@id/routeFragment" />
+        <argument
+            android:name="force_download"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
     <fragment
         android:id="@+id/routeFragment"
