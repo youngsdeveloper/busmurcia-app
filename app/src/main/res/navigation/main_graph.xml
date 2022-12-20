@@ -121,4 +121,22 @@
         android:name="com.youngsdeveloper.bus_murcia.fragments.FAQFragment"
         android:label="Preguntas frecuentes"
         tools:layout="@layout/fragment_faq" />
+    <fragment
+        android:id="@+id/ultimaHoraFragment"
+        android:name="com.youngsdeveloper.bus_murcia.fragments.UltimaHoraFragment"
+        android:label="Ultima hora"
+        tools:layout="@layout/fragment_ultima_hora" >
+        <action
+            android:id="@+id/action_ultimaHoraFragment_to_alertFragment"
+            app:destination="@id/alertFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/alertFragment"
+        android:name="com.youngsdeveloper.bus_murcia.fragments.AlertFragment"
+        android:label="Alerta"
+        tools:layout="@layout/fragment_alert" >
+        <argument
+            android:name="codigo"
+            app:argType="string" />
+    </fragment>
 </navigation>
