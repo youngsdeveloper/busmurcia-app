@@ -17,8 +17,8 @@ android {
         applicationId "com.youngsdeveloper.bus_murcia"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 7
-        versionName "1.6"
+        versionCode 8
+        versionName "1.7"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
@@ -125,7 +125,12 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
 
 
+
+    // Zoom
     implementation("com.otaliastudios:zoomlayout:1.9.0")
+
+    //Table
+    implementation 'com.github.ISchwarz23:SortableTableView:2.8.1'
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

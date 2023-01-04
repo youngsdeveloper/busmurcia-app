@@ -31,6 +31,7 @@
 
         <activity android:name="com.youngsdeveloper.bus_murcia.activites.MainActivity"
             android:forceDarkAllowed="true"
+            android:theme="@style/Theme.BusMurciaApp"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

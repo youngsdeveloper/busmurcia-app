@@ -11,7 +11,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.badge.BadgeDrawable
 import com.youngsdeveloper.bus_murcia.R
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -45,6 +47,33 @@ class MainActivity : AppCompatActivity() {
         val bottom_navigation = bottomNavigationView
         bottom_navigation.setupWithNavController(navController)
 
+        val badge_bonos = bottom_navigation.getOrCreateBadge(R.id.bonosFragment)
+        badge_bonos.number = 1
+
+        val prefs = getSharedPreferences("com.youngsdeveloper.bus_murcia", MODE_PRIVATE);
+
+
+        badge_bonos.isVisible = !prefs.getBoolean("has_seen_bonos", false)
+
+        bottomNavigationView.setOnNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.bonosFragment -> {
+                    if(badge_bonos.isVisible){
+                        badge_bonos.isVisible = false
+                        prefs.edit().putBoolean("has_seen_bonos", true).commit();
+                    }
+
+                }
+            }
+            NavigationUI.onNavDestinationSelected(it, navController)
+            true
+        }
+
+        if (prefs.getBoolean("firstrun", true)) {
+            // Do first run stuff here then set 'firstrun' as false
+            // using the following line to edit/commit prefs
+            prefs.edit().putBoolean("firstrun", false).commit();
+        }
 
         askNotificationPermission()
     }
