@@ -15,6 +15,10 @@ import java.util.concurrent.TimeUnit
 class TMPAdapter:ITMPAdapter {
 
     var route:Route;
+    override var from_origin:Int?=null
+    override var to_destination:Int?=null
+    override var only_route:Int?=null
+
     override var activeSynoptics = listOf<String>()
     override var realtime_hours = listOf<RealTimeHour>()
 
@@ -40,7 +44,27 @@ class TMPAdapter:ITMPAdapter {
     }
 
     fun getRealTimeHours():List<RealTimeHour>{
-        return realtime_hours.filter { rt -> activeSynoptics.contains(rt.synoptic) }
+        realtime_hours = realtime_hours.filter { rt -> activeSynoptics.contains(rt.synoptic) }
+
+
+        if(from_origin!=null){
+            realtime_hours = realtime_hours.filter { rt -> rt.origin_id.toInt()==from_origin}
+            Log.d("inside","from_origin:" + from_origin.toString())
+        }
+
+        if(to_destination!=null){
+            realtime_hours = realtime_hours.filter { rt -> rt.destination_id.toInt()==to_destination}
+            Log.d("inside","to_dest: " + to_destination.toString())
+        }
+
+        if(only_route!=null){
+            realtime_hours = realtime_hours.filter { rt -> rt.line_id.toInt()==only_route}
+            Log.d("inside","only_route")
+        }
+
+        Log.d("hours", realtime_hours.toString())
+
+        return realtime_hours
     }
 
 

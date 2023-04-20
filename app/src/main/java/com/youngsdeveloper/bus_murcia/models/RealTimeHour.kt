@@ -14,7 +14,9 @@ data class RealTimeHour(
         val synoptic: String,
         val delay_string: String,
         val delay_minutes: Integer,
-        val real_time: String
+        val real_time: String,
+        val origin_id: Integer,
+        val destination_id: Integer
 ) : Parcelable{
 
     fun isAdelantado():Boolean{

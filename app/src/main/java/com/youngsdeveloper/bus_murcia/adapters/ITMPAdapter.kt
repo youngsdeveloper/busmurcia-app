@@ -15,4 +15,8 @@ interface ITMPAdapter {
 
     var activeSynoptics: List<String>
     var realtime_hours: List<RealTimeHour>
+    var from_origin: Int?
+    var to_destination: Int?
+    var only_route: Int?
+
 }

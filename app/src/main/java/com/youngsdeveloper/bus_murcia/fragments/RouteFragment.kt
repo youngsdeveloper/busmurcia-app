@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.InputType
+import android.util.Log
 import android.view.*
 import android.widget.CompoundButton
 import android.widget.EditText
@@ -129,6 +130,19 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
         //Creamos el adaptador
         tmpAdapter = TMPAdapter(route)
 
+        // Si es L44, indicamos origen/destino para arreglar bug direcciones
+        if(route.id==44){
+            Log.d("msg","Entra aqui")
+            // 2 = (Nonduermas, Espinardo) 1 = (Espinardo,Nonduermas)
+            if(route.getRealDirection()==2){
+                tmpAdapter.from_origin = 243 // Origen Puebla de Soto
+            }else{
+                tmpAdapter.to_destination = 211 // Destino Puebla de Soto
+            }
+
+            tmpAdapter.only_route = 44
+        }
+
         //Crea el adaptador de horas
         hours_adapter = HourAdapter(mutableListOf())
         recycler_hours.adapter = hours_adapter
@@ -234,7 +248,14 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
 
             val stopsList = listOf<String>(args.stop.id.toString())
-            val linesList = args.route.lines.map { line -> line.id }
+            var linesList = args.route.lines.map { line -> line.id }
+
+            if(args.route.id==44){
+                linesList = listOf()
+            }
+
+            Log.d("lines", linesList.toString())
+
 
             val call = ApiAdapter
                     .getApiService()
@@ -276,6 +297,9 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
 
         tmpAdapter.realtime_hours = realtime_hours
+
+
+
         val realTimeData = tmpAdapter.getRealTimeData()
 
         text_next_bus_line.text = realTimeData.linea_cabecera
