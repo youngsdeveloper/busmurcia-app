@@ -170,6 +170,12 @@ import kotlinx.coroutines.launch
          }
      }
 
+     private fun showError(){
+         recycler_stops.visibility = View.GONE
+         loading_stops.visibility = View.GONE
+         text_error.visibility = View.VISIBLE
+
+     }
     private fun downloadRouteStops(route: Route, load_active:Boolean=true){
 
         this.route = route
@@ -185,29 +191,40 @@ import kotlinx.coroutines.launch
 
         CoroutineScope(Dispatchers.IO).launch {
 
-            val call = ApiAdapter
+
+            try {
+                val call = ApiAdapter
                     .getApiService()
                     .getLineStops(route.id)
 
-
-
-            requireActivity().runOnUiThread {
-
                 if(call.isSuccessful){
-                    val routes = call.body();
-                    routes?.let { routes ->
-                        loadRouteStop(routes, load_active)
-                    }
+                    requireActivity().runOnUiThread {
+                        val routes = call.body();
+                        routes?.let { routes ->
+                            loadRouteStop(routes, load_active)
+                        }
 
-                    if (routes != null) {
-                        if(routes.isEmpty()){
+                        if (routes != null) {
+                            if(routes.isEmpty()){
+                                text_empty.visibility = View.VISIBLE
+                            }
+                        }else{
                             text_empty.visibility = View.VISIBLE
                         }
-                    }else{
-                        text_empty.visibility = View.VISIBLE
                     }
+                }else{
+                    showError()
+                }
+            }catch (e:Exception){
+                requireActivity().runOnUiThread {
+                    showError()
                 }
             }
+
+
+
+
+
         }
     }
 
@@ -215,7 +232,10 @@ import kotlinx.coroutines.launch
 
 
         loading_stops.visibility = View.GONE
+        text_error.visibility = View.GONE
+
         recycler_stops.visibility = View.VISIBLE
+
 
         this.stopRoutes = routes
 
@@ -263,86 +283,93 @@ import kotlinx.coroutines.launch
 
 
 
-                    val call_stop = ApiAdapter
+
+                    try {
+                        val call_stop = ApiAdapter
                             .getApiService()
                             .getStopsByCoordinates(stop.latitude, stop.longitude)
 
-                    if(call_stop.isSuccessful){
-                        val stops = call_stop.body();
+                        if(call_stop.isSuccessful) {
+                            val stops = call_stop.body();
 
 
-                        val requested_stop = stops!!.filter { stp -> stp.id == stop.id }[0]
+                            val requested_stop = stops!!.filter { stp -> stp.id == stop.id }[0]
 
 
-                        val requested_route = requested_stop.getRoutes().filter{ rt -> rt.id == route.id }[0]
+                            val requested_route =
+                                requested_stop.getRoutes().filter { rt -> rt.id == route.id }[0]
 
-                        val stopsList = listOf<String>(stop.id.toString())
-
-
-                        /*
-                        FIX: Direction
-                        val linesList = args.route.lines
-                                .filter { line -> synoptics.contains(line.synoptic) }
-                                .filter { line -> line.direction == route.lines[0].direction }
-                                .map { line -> line.id }
-                        */
-                        var linesList = synoptics
-                            .map { synoptic -> "${route.id}.${synoptic}.${route.getRealDirection()}"}
+                            val stopsList = listOf<String>(stop.id.toString())
 
 
-                        Log.d("lines_list", linesList.toString())
+                            /*
+                            FIX: Direction
+                            val linesList = args.route.lines
+                                    .filter { line -> synoptics.contains(line.synoptic) }
+                                    .filter { line -> line.direction == route.lines[0].direction }
+                                    .map { line -> line.id }
+                            */
+                            var linesList = synoptics
+                                .map { synoptic -> "${route.id}.${synoptic}.${route.getRealDirection()}" }
 
-                        // Fix BUG L44
-                        if(args.route.id==44){
-                            linesList = listOf()
-                        }
 
-                        val call = ApiAdapter
+                            Log.d("lines_list", linesList.toString())
+
+                            // Fix BUG L44
+                            if (args.route.id == 44) {
+                                linesList = listOf()
+                            }
+
+                            val call = ApiAdapter
                                 .getApiService()
                                 .getRealTimeHours(stopsList, linesList)
 
-
-
-                        if(call.isSuccessful){
-                            val realtime_hours = call.body();
-
-
-
-                            var tmpAdapter = TMPAdapter(requested_route)
-
-                            // Si es L44, indicamos origen/destino para arreglar bug direcciones
-                            if(route.id==44){
-                                // 2 = (Nonduermas, Espinardo) 1 = (Espinardo,Nonduermas)
-                                if(route.getRealDirection()==2){
-                                    tmpAdapter.from_origin = 243 // Origen Puebla de Soto
-                                }else{
-                                    tmpAdapter.to_destination = 211 // Destino Puebla de Soto
-                                }
-
-                                tmpAdapter.only_route = 44
-                            }
-
-                            tmpAdapter.activeSynoptics = synoptics
-                            tmpAdapter.realtime_hours = realtime_hours!!
-
-
-                            if(isAdded){
-                                requireActivity().runOnUiThread {
+                            if(call.isSuccessful){
+                                val realtime_hours = call.body();
 
 
 
-                                    var status_min = tmpAdapter.getRealTimeData().status_min!!
-                                    if(status_min==null){
-                                        status_min = "No info"
+                                var tmpAdapter = TMPAdapter(requested_route)
+
+                                // Si es L44, indicamos origen/destino para arreglar bug direcciones
+                                if(route.id==44){
+                                    // 2 = (Nonduermas, Espinardo) 1 = (Espinardo,Nonduermas)
+                                    if(route.getRealDirection()==2){
+                                        tmpAdapter.from_origin = 243 // Origen Puebla de Soto
+                                    }else{
+                                        tmpAdapter.to_destination = 211 // Destino Puebla de Soto
                                     }
 
-                                    listener.onStopRealtimeLoaded(stop, status_min, requested_route)
+                                    tmpAdapter.only_route = 44
                                 }
+
+                                tmpAdapter.activeSynoptics = synoptics
+                                tmpAdapter.realtime_hours = realtime_hours!!
+
+
+                                if(isAdded){
+                                    requireActivity().runOnUiThread {
+
+
+
+                                        var status_min = tmpAdapter.getRealTimeData().status_min!!
+                                        if(status_min==null){
+                                            status_min = "No info"
+                                        }
+
+                                        listener.onStopRealtimeLoaded(stop, status_min, requested_route)
+                                    }
+                                }
+
+
                             }
 
+                        }
+                    }catch (e:Exception){
+                        requireActivity().runOnUiThread {
+                            showError()
 
                         }
-
                     }
 
 

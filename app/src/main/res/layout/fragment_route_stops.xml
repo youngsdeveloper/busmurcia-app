@@ -112,6 +112,21 @@
         app:layout_constraintBottom_toBottomOf="@+id/recycler_stops"
         app:layout_constraintEnd_toEndOf="@+id/recycler_stops"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/text_error"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:drawableLeft="@drawable/ic_info"
+        android:drawablePadding="20dp"
+        android:visibility="gone"
+        android:text="Ha ocurrido un error de conexión con el servicio de TMP Murcia.\n\nPor favor, vuelve a intentarlo más tarde o comprueba tu conexión."
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -22,5 +22,15 @@
         android:layout_height="40dp"
         android:layout_gravity="center" />
 
-
+    <TextView
+        android:id="@+id/textError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:drawableLeft="@drawable/ic_info"
+        android:layout_margin="50dp"
+        android:drawablePadding="20dp"
+        android:text="Ha ocurrido un error de conexión con el servicio de TMP Murcia.\n\nPor favor, vuelve a intentarlo más tarde o comprueba tu conexión."
+        />
 </FrameLayout>

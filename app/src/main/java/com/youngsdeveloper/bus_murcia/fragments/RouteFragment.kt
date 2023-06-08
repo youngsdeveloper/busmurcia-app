@@ -228,6 +228,16 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
 
 
+    private fun showError(){
+        loading_realtime.visibility = View.GONE;
+        text_status_next_bus.visibility = View.VISIBLE
+
+        text_status_next_bus.text = "Error al conectar con el servicio de TMP Murcia.\n\nVuelva a intentarlo más tarde."
+
+        mainHandler.removeCallbacks(updateRealtimeTask) //
+        mainHandler.removeCallbacks(updateRealtimeRemoteTask) //
+
+    }
     private fun downloadRemotelRealTimeData(){
 
         if(!isAdded){
@@ -253,27 +263,35 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
             if(args.route.id==44){
                 linesList = listOf()
             }
-
-            Log.d("lines", linesList.toString())
-
-
-            val call = ApiAdapter
+            try {
+                val call = ApiAdapter
                     .getApiService()
                     .getRealTimeHours(stopsList, linesList)
 
 
 
-            if(isAdded){
-                requireActivity().runOnUiThread {
+                if(isAdded){
+                    requireActivity().runOnUiThread {
 
-                    if(call.isSuccessful){
-                        val realtime_hours = call.body();
-                        realtime_hours?.let { realtime_hours ->
-                            loadRealTimeData(realtime_hours)
+                        if(call.isSuccessful){
+                            val realtime_hours = call.body();
+                            realtime_hours?.let { realtime_hours ->
+                                loadRealTimeData(realtime_hours)
+                            }
+                        }else{
+                            showError()
                         }
                     }
                 }
+            }catch (e:Exception){
+
+                requireActivity().runOnUiThread {
+                    showError()
+                }
+
             }
+
+
 
 
         }
@@ -301,6 +319,8 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
 
         val realTimeData = tmpAdapter.getRealTimeData()
+
+
 
         text_next_bus_line.text = realTimeData.linea_cabecera
         text_status_next_bus.text = realTimeData.status

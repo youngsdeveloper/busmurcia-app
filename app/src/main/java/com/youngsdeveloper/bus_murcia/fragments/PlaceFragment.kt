@@ -37,6 +37,10 @@ class PlaceFragment : Fragment(R.layout.fragment_place) {
 
     }
 
+    private fun showError(){
+        progressBar.visibility = View.GONE
+        textError.visibility = View.VISIBLE
+    }
 
     private fun downloadPlace(){
 
@@ -49,18 +53,30 @@ class PlaceFragment : Fragment(R.layout.fragment_place) {
 
         CoroutineScope(Dispatchers.IO).launch {
             val place = args.place
-            val call = ApiAdapter.getApiService().getStopsByCoordinates(place.lat, place.lon)
-            val stops = call.body();
 
 
-            requireActivity().runOnUiThread {
+            try {
+                val call = ApiAdapter.getApiService().getStopsByCoordinates(place.lat, place.lon)
+
                 if(call.isSuccessful){
-                    stops?.let { stops -> loadPlace(stops) }
-                }else{
-                    Toast.makeText(requireContext(), "Fallo!", Toast.LENGTH_LONG).show();
+                    val stops = call.body();
 
+
+                    requireActivity().runOnUiThread {
+                        stops?.let { stops -> loadPlace(stops) }
+
+                    }
+                }else{
+                    showError()
                 }
+            }catch (e: Exception){
+                requireActivity().runOnUiThread {
+                    showError()
+                }
+
             }
+
+
         }
     }
 
@@ -75,6 +91,7 @@ class PlaceFragment : Fragment(R.layout.fragment_place) {
         }
 
         progressBar.visibility = View.GONE
+        textError.visibility = View.GONE
 
 
         val routeClickListener = object : RouteClickListener {

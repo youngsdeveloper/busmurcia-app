@@ -47,11 +47,21 @@ class UltimaHoraFragment : Fragment(R.layout.fragment_ultima_hora) {
 
         thread {
 
-            val source = URL("http://tmpmurcia.es/ultima.asp").readText(Charset.forName("ISO-8859-1"))
-            val avisosMap = parseHTML(source)
-            requireActivity().runOnUiThread {
-                setupUI(avisosMap)
+            try {
+                val source = URL("http://tmpmurcia.es/ultima.asp").readText(Charset.forName("ISO-8859-1"))
+                val avisosMap = parseHTML(source)
+                requireActivity().runOnUiThread {
+                    setupUI(avisosMap)
+                }
+            }catch (e:Exception){
+                requireActivity().runOnUiThread {
+                    loading_realtime.visibility = View.GONE
+                    textError.visibility = View.VISIBLE
+
+                }
             }
+
+
         }
     }
 
