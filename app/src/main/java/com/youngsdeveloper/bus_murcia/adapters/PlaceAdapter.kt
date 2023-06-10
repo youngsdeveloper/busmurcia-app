@@ -48,5 +48,5 @@ interface PlaceClickListener {
 
 
 class PlaceViewHolder(val itemView: View): RecyclerView.ViewHolder(itemView){
-    val button_place:MaterialButton = itemView.text_stop
+    val button_place:MaterialButton = itemView.text_headsign
 }

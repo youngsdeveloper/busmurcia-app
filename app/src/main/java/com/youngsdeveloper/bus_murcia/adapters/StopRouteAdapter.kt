@@ -197,8 +197,8 @@ interface StopRealtimeListener {
 
 
 class StopRouteViewHolder(val itemView: View): RecyclerView.ViewHolder(itemView){
-    val text_stop:MaterialTextView = itemView.text_stop
-    val text_location:MaterialTextView = itemView.text_location
+    val text_stop:MaterialTextView = itemView.text_headsign
+    val text_location:MaterialTextView = itemView.text_status
     val text_next_bus_minutes:MaterialTextView = itemView.text_next_bus_minutes
 
     val loading_realtime_stop:ProgressBar = itemView.loading_realtime_stop

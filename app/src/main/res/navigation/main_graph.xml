@@ -39,6 +39,9 @@
             android:name="force_download"
             app:argType="boolean"
             android:defaultValue="false" />
+        <action
+            android:id="@+id/action_placeFragment_to_stopFragment4"
+            app:destination="@id/stopFragment" />
     </fragment>
     <fragment
         android:id="@+id/routeFragment"
@@ -137,6 +140,19 @@
         tools:layout="@layout/fragment_alert" >
         <argument
             android:name="codigo"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/stopFragment"
+        android:name="com.youngsdeveloper.bus_murcia.fragments.StopFragment"
+        android:label="{stop_name}"
+        tools:layout="@layout/fragment_stop">
+        <argument
+            android:name="stop"
+            app:argType="com.youngsdeveloper.bus_murcia.models.Stop" />
+        <argument
+            android:name="stop_name"
+            android:defaultValue="Parada"
             app:argType="string" />
     </fragment>
 </navigation>

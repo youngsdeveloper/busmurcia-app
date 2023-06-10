@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import com.youngsdeveloper.bus_murcia.R
+import com.youngsdeveloper.bus_murcia.models.Route
 import com.youngsdeveloper.bus_murcia.models.Stop
 import kotlinx.android.synthetic.main.item_stop.view.*
 import kotlin.streams.toList
@@ -16,6 +18,8 @@ import kotlin.streams.toList
 class StopAdapter(var items: List<Stop>, var routeClickListener: RouteClickListener): RecyclerView.Adapter<StopViewHolder>() {
 
     lateinit var ctx:Context
+
+    var stopOpenClickListener :StopOpenClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StopViewHolder {
         ctx = parent.context
@@ -38,6 +42,12 @@ class StopAdapter(var items: List<Stop>, var routeClickListener: RouteClickListe
         holder.recycler_lines.addItemDecoration(DividerItemDecoration(ctx, 0))
 
         holder.recycler_lines.adapter = routeAdapter
+
+        holder.button_open.setOnClickListener {
+            stopOpenClickListener?.let { stopOpenClickListener ->
+                stopOpenClickListener.onStopOpenClick(stop)
+            }
+        }
     }
 
     override fun getItemCount(): Int = items.size
@@ -48,5 +58,10 @@ class StopAdapter(var items: List<Stop>, var routeClickListener: RouteClickListe
 class StopViewHolder(val itemView: View): RecyclerView.ViewHolder(itemView){
     val text_parada:TextView = itemView.text_parada
     val recycler_lines:RecyclerView= itemView.recycler_lines
+    val button_open:MaterialButton = itemView.button_open
+}
 
+
+interface StopOpenClickListener {
+    fun onStopOpenClick(stop: Stop?)
 }

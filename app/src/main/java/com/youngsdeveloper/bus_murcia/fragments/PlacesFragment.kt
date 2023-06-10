@@ -163,8 +163,7 @@ class PlacesFragment : Fragment(R.layout.fragment_places) {
                     .start { location ->
 
                         val place = Place(-1, "Tu ubicación", location.latitude, location.longitude)
-                        val action = PlacesFragmentDirections.actionPlacesFragmentToPlaceFragment(place, place.name)
-                        action.forceDownload = true
+                        val action = PlacesFragmentDirections.actionPlacesFragmentToPlaceFragment(place, place.name,true)
                         findNavController().navigate(action)
 
                     }

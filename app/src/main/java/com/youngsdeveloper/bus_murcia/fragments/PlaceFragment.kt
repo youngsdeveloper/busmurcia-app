@@ -12,6 +12,7 @@ import com.google.gson.Gson
 import com.youngsdeveloper.bus_murcia.R
 import com.youngsdeveloper.bus_murcia.adapters.RouteClickListener
 import com.youngsdeveloper.bus_murcia.adapters.StopAdapter
+import com.youngsdeveloper.bus_murcia.adapters.StopOpenClickListener
 import com.youngsdeveloper.bus_murcia.io.ApiAdapter
 import com.youngsdeveloper.bus_murcia.models.Route
 import com.youngsdeveloper.bus_murcia.models.Stop
@@ -110,10 +111,22 @@ class PlaceFragment : Fragment(R.layout.fragment_place) {
 
 
 
+        val stopClickLineasFragment = object : StopOpenClickListener {
+            override fun onStopOpenClick(s: Stop?) {
+                s?.let { s ->
+                    val action = PlaceFragmentDirections.actionPlaceFragmentToStopFragment4(s,s.name)
+                    findNavController().navigate(action)
+
+                }
+            }
+        }
 
         val adapter = StopAdapter(stops!!, routeClickListener)
 
+        adapter.stopOpenClickListener = stopClickLineasFragment
+
         recycler_stops.addItemDecoration(DividerItemDecoration(context, 0))
+
 
 
         recycler_stops.adapter = adapter

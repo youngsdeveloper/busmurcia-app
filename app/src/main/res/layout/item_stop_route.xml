@@ -9,7 +9,7 @@
 
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/text_stop"
+        android:id="@+id/text_headsign"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -23,15 +23,15 @@
         app:layout_constraintStart_toEndOf="@+id/image_mark" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/text_location"
+        android:id="@+id/text_status"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Ubicación"
 
         app:fontFamily="sans-serif-light"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
-        app:layout_constraintStart_toStartOf="@+id/text_stop"
-        app:layout_constraintTop_toBottomOf="@+id/text_stop" />
+        app:layout_constraintStart_toStartOf="@+id/text_headsign"
+        app:layout_constraintTop_toBottomOf="@+id/text_headsign" />
 
     <ImageView
         android:id="@+id/image_mark"
@@ -76,7 +76,7 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/text_location"
+        app:layout_constraintStart_toEndOf="@+id/text_status"
         app:layout_constraintTop_toTopOf="parent" />
 
 

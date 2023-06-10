@@ -20,4 +20,7 @@ interface ApiService {
     suspend fun getLineStops(@Query("route") route: Int):Response<List<StopRoute>>
 
 
+    @GET("stop")
+    suspend fun getStop(@Query("id") id: Int):Response<Stop>
+
 }
