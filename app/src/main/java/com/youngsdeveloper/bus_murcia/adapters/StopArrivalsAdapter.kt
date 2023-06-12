@@ -40,7 +40,12 @@ class StopArrivalsAdapter(var items: List<ArrivalRealTime>): RecyclerView.Adapte
 
         holder.text_route.text = "${arrival.route}-${arrival.synoptic}"
 
-        holder.text_headsign.text = arrival.headsign.split("-> ")[1]
+        if(arrival.headsign.split("-> ").size>1){
+            holder.text_headsign.text = arrival.headsign.split("-> ")[1]
+        }else{
+            holder.text_headsign.text = arrival.headsign
+        }
+
 
 
 
