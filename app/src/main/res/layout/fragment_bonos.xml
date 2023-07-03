@@ -39,7 +39,7 @@
             android:drawableLeft="@drawable/ic_info"
             android:drawablePadding="10dp"
             android:gravity="center_vertical"
-            android:text="Descuento del 60% en bonos hasta el 30 de Junio de 2023. No aplica a billetes sencillos. El descuento está aplicado en el precio de la app."
+            android:text="Descuento del 60% en bonos hasta el 31 de Diciembre de 2023. No aplica a billetes sencillos. El descuento está aplicado en el precio de la app."
             />
         <TextView
             android:id="@+id/textView3"
