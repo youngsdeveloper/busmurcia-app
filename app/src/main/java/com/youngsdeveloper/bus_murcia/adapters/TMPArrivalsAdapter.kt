@@ -27,7 +27,7 @@ class TMPArrivalsAdapter:IArrivalsAdapter {
 
 
 
-                for(rt in line.realtime){
+                for(rt in line.realtime!!){
                     var LATBUS_MODE = false // If minutes latbus <= 3, use latbus info
                     var LATBUS_MINUTES: Int = 0
 

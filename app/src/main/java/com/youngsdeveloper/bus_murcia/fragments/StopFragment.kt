@@ -94,7 +94,47 @@ class StopFragment : Fragment(R.layout.fragment_stop) {
                 if(call.isSuccessful){
                     val stop = call.body()
 
+                    // FIX: Linea 44
+                    stop?.let { stop ->
+                        if(stop.lines.any { line -> line.route==44 }){
+                            // Contiene alguna linea 44...
+                            // Hay que hacer otra peticion para mapear
+
+                            val call2 = ApiAdapter.getApiService().getRealTimeHours(
+                                mutableListOf(args.stop.id.toString()),
+                                mutableListOf()
+                            )
+
+                            if(call2.isSuccessful){
+
+                                val realtime_list = call2.body()
+
+                                realtime_list?.let { realtime_list ->
+                                    realtime_list.filter { rt -> rt.line_id.toInt()==44 }.forEach { rt ->
+                                        var line  = stop.lines.filter { l -> l.id.startsWith("${rt.line_id}.${rt.synoptic}") }.firstOrNull()
+                                        line?.let { line->
+                                            if(line.realtime==null){
+                                                line.realtime = mutableListOf(rt)
+                                            }else{
+                                                line.realtime!!.add(rt)
+                                            }
+                                        }
+                                    }
+                                }
+
+
+
+                            }
+
+
+                        }
+                    }
+
+
+
                     requireActivity().runOnUiThread {
+                        Log.d("stop_lines", stop!!.lines.toString())
+
 
                         stop?.let { stop -> loadStop(stop)}
                     }
@@ -106,6 +146,7 @@ class StopFragment : Fragment(R.layout.fragment_stop) {
                 }
 
             }catch (e:Exception){
+                Log.e("error", e.localizedMessage)
                 requireActivity().runOnUiThread {
                     loading.visibility = View.GONE
                     text_error.visibility = View.VISIBLE
