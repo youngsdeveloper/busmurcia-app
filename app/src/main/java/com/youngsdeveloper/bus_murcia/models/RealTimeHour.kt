@@ -1,5 +1,6 @@
 package com.youngsdeveloper.bus_murcia.models
 
+import android.os.Parcel
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
@@ -16,7 +17,9 @@ data class RealTimeHour(
         val delay_minutes: Integer,
         val real_time: String,
         val origin_id: Integer,
-        val destination_id: Integer
+        val destination_id: Integer,
+        val destination_name: String
+
 ) : Parcelable{
 
     fun isAdelantado():Boolean{

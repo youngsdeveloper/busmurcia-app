@@ -316,7 +316,7 @@ import kotlinx.coroutines.launch
                             Log.d("lines_list", linesList.toString())
 
                             // Fix BUG L44
-                            if (args.route.id == 44) {
+                            if (args.route.id == 44 || args.route.id == 39) {
                                 linesList = listOf()
                             }
 
@@ -341,6 +341,18 @@ import kotlinx.coroutines.launch
                                     }
 
                                     tmpAdapter.only_route = 44
+                                }
+
+                                // Si es L39, indicamos origen/destino para arreglar bug direcciones
+                                if(route.id==39){
+                                    // 1 = (Campus, Murcia) 2 = (Murcia,Campus)
+                                    if(route.getRealDirection()==1){
+                                        tmpAdapter.from_origin = 2418 // Origen Campus
+                                    }else{
+                                        tmpAdapter.to_destination = 2418 // Destino Campus
+                                    }
+
+                                    tmpAdapter.only_route = 39
                                 }
 
                                 tmpAdapter.activeSynoptics = synoptics

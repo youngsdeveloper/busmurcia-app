@@ -6,10 +6,12 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.youngsdeveloper.bus_murcia.R
+import com.youngsdeveloper.bus_murcia.adapters.AlternativeTMPArrivalsAdapter
 import com.youngsdeveloper.bus_murcia.adapters.IArrivalsAdapter
 import com.youngsdeveloper.bus_murcia.adapters.StopArrivalsAdapter
 import com.youngsdeveloper.bus_murcia.adapters.TMPArrivalsAdapter
 import com.youngsdeveloper.bus_murcia.io.ApiAdapter
+import com.youngsdeveloper.bus_murcia.models.RealTimeHour
 import com.youngsdeveloper.bus_murcia.models.Stop
 import kotlinx.android.synthetic.main.fragment_place.*
 import kotlinx.android.synthetic.main.fragment_stop.*
@@ -73,6 +75,45 @@ class StopFragment : Fragment(R.layout.fragment_stop) {
 
 
     }
+
+    private fun loadAlternativeStop(hours: List<RealTimeHour>){
+
+        loading.visibility = View.GONE
+        recycler_llegadas.visibility = View.VISIBLE
+
+
+        val IArrivalsAdapter = AlternativeTMPArrivalsAdapter(hours)
+
+
+        val arrivals = IArrivalsAdapter.getArrivalsRealTime()
+
+        stop_arrrivals_adapter.items = arrivals
+
+        recycler_llegadas.adapter = stop_arrrivals_adapter
+
+        if(arrivals.size>0){
+            text_empty.visibility = View.GONE
+        }else{
+            text_empty.visibility = View.VISIBLE
+        }
+
+
+    }
+
+
+    private suspend fun downloadAlternativeStop(){
+
+        val call = ApiAdapter.getApiService().getRealTimeHours(listOf(args.stop.id.toString()), listOf());
+
+        val hours = call.body()!!;
+
+
+        requireActivity().runOnUiThread {
+            loadAlternativeStop(hours)
+        }
+
+
+    }
     private fun downloadStop(){
 
         recycler_llegadas.visibility = View.GONE
@@ -96,6 +137,13 @@ class StopFragment : Fragment(R.layout.fragment_stop) {
 
                     // FIX: Linea 44
                     stop?.let { stop ->
+
+                        if(stop.lines.isEmpty()){
+                            // Probar descarga de 2º tipo
+                            downloadAlternativeStop();
+                            return@launch;
+                        }
+
                         if(stop.lines.any { line -> line.route==44 }){
                             // Contiene alguna linea 44...
                             // Hay que hacer otra peticion para mapear
@@ -111,6 +159,41 @@ class StopFragment : Fragment(R.layout.fragment_stop) {
 
                                 realtime_list?.let { realtime_list ->
                                     realtime_list.filter { rt -> rt.line_id.toInt()==44 }.forEach { rt ->
+                                        var line  = stop.lines.filter { l -> l.id.startsWith("${rt.line_id}.${rt.synoptic}") }.firstOrNull()
+                                        line?.let { line->
+                                            if(line.realtime==null){
+                                                line.realtime = mutableListOf(rt)
+                                            }else{
+                                                line.realtime!!.add(rt)
+                                            }
+                                        }
+                                    }
+                                }
+
+
+
+                            }
+
+
+                        }
+
+                        // FIX 39
+
+                        if(stop.lines.any { line -> line.route==39 }){
+                            // Contiene alguna linea 39...
+                            // Hay que hacer otra peticion para mapear
+
+                            val call2 = ApiAdapter.getApiService().getRealTimeHours(
+                                mutableListOf(args.stop.id.toString()),
+                                mutableListOf()
+                            )
+
+                            if(call2.isSuccessful){
+
+                                val realtime_list = call2.body()
+
+                                realtime_list?.let { realtime_list ->
+                                    realtime_list.filter { rt -> rt.line_id.toInt()==39 }.forEach { rt ->
                                         var line  = stop.lines.filter { l -> l.id.startsWith("${rt.line_id}.${rt.synoptic}") }.firstOrNull()
                                         line?.let { line->
                                             if(line.realtime==null){
