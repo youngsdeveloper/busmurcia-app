@@ -23,7 +23,7 @@ class AlternativeTMPArrivalsAdapter:IArrivalsAdapter {
 
                 var minutes = 1
 
-                if(realTimeHour.real_time.startsWith("En")){
+                if(realTimeHour.real_time.endsWith("minutos")){
                     minutes = realTimeHour.real_time.filter {  it.isDigit() }.toInt()
                 }
 
