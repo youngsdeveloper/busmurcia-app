@@ -331,29 +331,6 @@ import kotlinx.coroutines.launch
 
                                 var tmpAdapter = TMPAdapter(requested_route)
 
-                                // Si es L44, indicamos origen/destino para arreglar bug direcciones
-                                if(route.id==44){
-                                    // 2 = (Nonduermas, Espinardo) 1 = (Espinardo,Nonduermas)
-                                    if(route.getRealDirection()==2){
-                                        tmpAdapter.from_origin = 243 // Origen Puebla de Soto
-                                    }else{
-                                        tmpAdapter.to_destination = 211 // Destino Puebla de Soto
-                                    }
-
-                                    tmpAdapter.only_route = 44
-                                }
-
-                                // Si es L39, indicamos origen/destino para arreglar bug direcciones
-                                if(route.id==39){
-                                    // 1 = (Campus, Murcia) 2 = (Murcia,Campus)
-                                    if(route.getRealDirection()==1){
-                                        tmpAdapter.from_origin = 2418 // Origen Campus
-                                    }else{
-                                        tmpAdapter.to_destination = 2418 // Destino Campus
-                                    }
-
-                                    tmpAdapter.only_route = 39
-                                }
 
                                 tmpAdapter.activeSynoptics = synoptics
                                 tmpAdapter.realtime_hours = realtime_hours!!
