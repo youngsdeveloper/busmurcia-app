@@ -315,11 +315,6 @@ import kotlinx.coroutines.launch
 
                             Log.d("lines_list", linesList.toString())
 
-                            // Fix BUG L44
-                            if (args.route.id == 44 || args.route.id == 39) {
-                                linesList = listOf()
-                            }
-
                             val call = ApiAdapter
                                 .getApiService()
                                 .getRealTimeHours(stopsList, linesList)
