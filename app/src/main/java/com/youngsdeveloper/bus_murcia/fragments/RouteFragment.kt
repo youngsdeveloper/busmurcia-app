@@ -130,18 +130,6 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
         //Creamos el adaptador
         tmpAdapter = TMPAdapter(route)
 
-        // Si es L44, indicamos origen/destino para arreglar bug direcciones
-        if(route.id==44){
-            Log.d("msg","Entra aqui")
-            // 2 = (Nonduermas, Espinardo) 1 = (Espinardo,Nonduermas)
-            if(route.getRealDirection()==2){
-                tmpAdapter.from_origin = 243 // Origen Puebla de Soto
-            }else{
-                tmpAdapter.to_destination = 211 // Destino Puebla de Soto
-            }
-
-            tmpAdapter.only_route = 44
-        }
 
         //Crea el adaptador de horas
         hours_adapter = HourAdapter(mutableListOf())

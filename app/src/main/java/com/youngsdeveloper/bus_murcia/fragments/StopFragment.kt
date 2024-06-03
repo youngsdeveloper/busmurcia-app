@@ -144,6 +144,7 @@ class StopFragment : Fragment(R.layout.fragment_stop) {
                             return@launch;
                         }
 
+                        /*
                         if(stop.lines.any { line -> line.route==44 }){
                             // Contiene alguna linea 44...
                             // Hay que hacer otra peticion para mapear
@@ -211,6 +212,8 @@ class StopFragment : Fragment(R.layout.fragment_stop) {
 
 
                         }
+
+                         */
                     }
 
 
