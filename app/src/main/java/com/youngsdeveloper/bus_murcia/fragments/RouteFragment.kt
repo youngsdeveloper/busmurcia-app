@@ -248,9 +248,6 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
             val stopsList = listOf<String>(args.stop.id.toString())
             var linesList = args.route.lines.map { line -> line.id }
 
-            if(args.route.id==44){
-                linesList = listOf()
-            }
             try {
                 val call = ApiAdapter
                     .getApiService()
