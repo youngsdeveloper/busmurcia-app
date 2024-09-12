@@ -8,9 +8,11 @@ import androidx.navigation.fragment.navArgs
 import com.youngsdeveloper.bus_murcia.R
 import com.youngsdeveloper.bus_murcia.adapters.AlternativeTMPArrivalsAdapter
 import com.youngsdeveloper.bus_murcia.adapters.IArrivalsAdapter
+import com.youngsdeveloper.bus_murcia.adapters.PanelTMPArrivalsAdapter
 import com.youngsdeveloper.bus_murcia.adapters.StopArrivalsAdapter
 import com.youngsdeveloper.bus_murcia.adapters.TMPArrivalsAdapter
 import com.youngsdeveloper.bus_murcia.io.ApiAdapter
+import com.youngsdeveloper.bus_murcia.models.PanelItem
 import com.youngsdeveloper.bus_murcia.models.RealTimeHour
 import com.youngsdeveloper.bus_murcia.models.Stop
 import kotlinx.android.synthetic.main.fragment_place.*
@@ -96,20 +98,41 @@ class StopFragment : Fragment(R.layout.fragment_stop) {
         }else{
             text_empty.visibility = View.VISIBLE
         }
+    }
+
+    private fun loadPanel(items: List<PanelItem>){
+
+        loading.visibility = View.GONE
+        recycler_llegadas.visibility = View.VISIBLE
 
 
+        val panelTMPArrivalsAdapter = PanelTMPArrivalsAdapter(items)
+
+
+        val arrivals = panelTMPArrivalsAdapter.getArrivalsRealTime()
+
+        stop_arrrivals_adapter.items = stop_arrrivals_adapter.items.plus(arrivals)
+
+        stop_arrrivals_adapter.items = stop_arrrivals_adapter.items.sortedBy{it.minutes}
+        recycler_llegadas.adapter = stop_arrrivals_adapter
+
+        if(arrivals.size>0){
+            text_empty.visibility = View.GONE
+        }else{
+            text_empty.visibility = View.VISIBLE
+        }
     }
 
 
-    private suspend fun downloadAlternativeStop(){
+    private suspend fun downloadPanel(){
 
-        val call = ApiAdapter.getApiService().getRealTimeHours(listOf(args.stop.id.toString()), listOf());
+        val call = ApiAdapter.getApiService().getPanel(args.stop.id.toInt());
 
-        val hours = call.body()!!;
+        val panel = call.body()!!;
 
 
         requireActivity().runOnUiThread {
-            loadAlternativeStop(hours)
+            loadPanel(panel)
         }
 
 
@@ -130,106 +153,8 @@ class StopFragment : Fragment(R.layout.fragment_stop) {
 
             try {
 
-                val call = ApiAdapter.getApiService().getStop(args.stop.id.toInt())
+                downloadPanel()
 
-                if(call.isSuccessful){
-                    val stop = call.body()
-
-                    // FIX: Linea 44
-                    stop?.let { stop ->
-
-                        if(stop.lines.isEmpty()){
-                            // Probar descarga de 2º tipo
-                            downloadAlternativeStop();
-                            return@launch;
-                        }
-
-                        /*
-                        if(stop.lines.any { line -> line.route==44 }){
-                            // Contiene alguna linea 44...
-                            // Hay que hacer otra peticion para mapear
-
-                            val call2 = ApiAdapter.getApiService().getRealTimeHours(
-                                mutableListOf(args.stop.id.toString()),
-                                mutableListOf()
-                            )
-
-                            if(call2.isSuccessful){
-
-                                val realtime_list = call2.body()
-
-                                realtime_list?.let { realtime_list ->
-                                    realtime_list.filter { rt -> rt.line_id.toInt()==44 }.forEach { rt ->
-                                        var line  = stop.lines.filter { l -> l.id.startsWith("${rt.line_id}.${rt.synoptic}") }.firstOrNull()
-                                        line?.let { line->
-                                            if(line.realtime==null){
-                                                line.realtime = mutableListOf(rt)
-                                            }else{
-                                                line.realtime!!.add(rt)
-                                            }
-                                        }
-                                    }
-                                }
-
-
-
-                            }
-
-
-                        }
-
-                        // FIX 39
-
-                        if(stop.lines.any { line -> line.route==39 }){
-                            // Contiene alguna linea 39...
-                            // Hay que hacer otra peticion para mapear
-
-                            val call2 = ApiAdapter.getApiService().getRealTimeHours(
-                                mutableListOf(args.stop.id.toString()),
-                                mutableListOf()
-                            )
-
-                            if(call2.isSuccessful){
-
-                                val realtime_list = call2.body()
-
-                                realtime_list?.let { realtime_list ->
-                                    realtime_list.filter { rt -> rt.line_id.toInt()==39 }.forEach { rt ->
-                                        var line  = stop.lines.filter { l -> l.id.startsWith("${rt.line_id}.${rt.synoptic}") }.firstOrNull()
-                                        line?.let { line->
-                                            if(line.realtime==null){
-                                                line.realtime = mutableListOf(rt)
-                                            }else{
-                                                line.realtime!!.add(rt)
-                                            }
-                                        }
-                                    }
-                                }
-
-
-
-                            }
-
-
-                        }
-
-                         */
-                    }
-
-
-
-                    requireActivity().runOnUiThread {
-                        Log.d("stop_lines", stop!!.lines.toString())
-
-
-                        stop?.let { stop -> loadStop(stop)}
-                    }
-
-                }else{
-                    requireActivity().runOnUiThread {
-                        text_empty.visibility = View.GONE
-                    }
-                }
 
             }catch (e:Exception){
                 Log.e("error", e.localizedMessage)

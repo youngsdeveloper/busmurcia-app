@@ -1,5 +1,6 @@
 package com.youngsdeveloper.bus_murcia.io
 
+import com.youngsdeveloper.bus_murcia.models.PanelItem
 import com.youngsdeveloper.bus_murcia.models.RealTimeHour
 import com.youngsdeveloper.bus_murcia.models.StopRoute
 import com.youngsdeveloper.bus_murcia.models.Stop
@@ -22,5 +23,9 @@ interface ApiService {
 
     @GET("stop")
     suspend fun getStop(@Query("id") id: Int):Response<Stop>
+
+    @GET("realTimePanel")
+    suspend fun getPanel(@Query("stop") stop: Int):Response<List<PanelItem>>
+
 
 }
