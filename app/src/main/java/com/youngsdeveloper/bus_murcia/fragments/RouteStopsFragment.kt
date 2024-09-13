@@ -2,10 +2,12 @@
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -17,15 +19,11 @@ import com.youngsdeveloper.bus_murcia.adapters.StopClickListener
 import com.youngsdeveloper.bus_murcia.adapters.StopRealtimeListener
 import com.youngsdeveloper.bus_murcia.adapters.StopRouteAdapter
 import com.youngsdeveloper.bus_murcia.adapters.TMPAdapter
+import com.youngsdeveloper.bus_murcia.databinding.FragmentRouteStopsBinding
 import com.youngsdeveloper.bus_murcia.io.ApiAdapter
 import com.youngsdeveloper.bus_murcia.models.Route
 import com.youngsdeveloper.bus_murcia.models.Stop
 import com.youngsdeveloper.bus_murcia.models.StopRoute
-import kotlinx.android.synthetic.main.fragment_place.*
-import kotlinx.android.synthetic.main.fragment_route.*
-import kotlinx.android.synthetic.main.fragment_route.chip_group_synoptic
-import kotlinx.android.synthetic.main.fragment_route_stops.*
-import kotlinx.android.synthetic.main.fragment_route_stops.recycler_stops
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -46,6 +44,24 @@ import kotlinx.coroutines.launch
     private var synoptics = mutableListOf<String>();
 
 
+     private var _binding: FragmentRouteStopsBinding? = null
+     private val binding get() = _binding!!
+
+
+     override fun onCreateView(
+         inflater: LayoutInflater,
+         container: ViewGroup?,
+         savedInstanceState: Bundle?
+     ): View? {
+         _binding = FragmentRouteStopsBinding.inflate(inflater, container, false)
+         val view = binding.root
+         return view
+     }
+
+     override fun onDestroyView() {
+         super.onDestroyView()
+         _binding = null
+     }
      override fun onCreate(savedInstanceState: Bundle?) {
          super.onCreate(savedInstanceState)
          setHasOptionsMenu(true)
@@ -78,9 +94,9 @@ import kotlinx.coroutines.launch
         this.synoptics = args.synoptics.toMutableList()
 
         if(route.lines.isNotEmpty()){
-            text_headsign.text = route.lines[0].headsign
+            binding.textHeadsign.text = route.lines[0].headsign
         }else{
-            text_headsign.text = ""
+            binding.textHeadsign.text = ""
         }
         //
 
@@ -93,8 +109,8 @@ import kotlinx.coroutines.launch
         downloadRouteStops(route);
 
         adapter = StopRouteAdapter(mutableListOf(), requireContext())
-        recycler_stops.adapter = adapter
-        adapter.recyclerView = recycler_stops
+        binding.recyclerStops.adapter = adapter
+        adapter.recyclerView = binding.recyclerStops
 
     }
 
@@ -117,14 +133,14 @@ import kotlinx.coroutines.launch
         for(synoptic in route.getSynopticInRoute()){
             val chip = layoutInflater.inflate(
                     R.layout.layout_chip_choice,
-                    chip_group_synoptic,
+                    binding.chipGroupSynoptic,
                     false
             ) as Chip
             chip.text = "L${route.id} - ${synoptic}"
             chip.tag = synoptic
             chip.isChecked = synoptics.contains(synoptic)
             chip.setOnCheckedChangeListener(onCheckedListener)
-            chip_group_synoptic.addView(chip)
+            binding.chipGroupSynoptic.addView(chip)
             chipList.add(chip)
         }
 
@@ -151,43 +167,43 @@ import kotlinx.coroutines.launch
          for(synoptic in synps){
              val chip = layoutInflater.inflate(
                  R.layout.layout_chip_choice,
-                 chip_group_synoptic,
+                 binding.chipGroupSynoptic,
                  false
              ) as Chip
              chip.text = "L${route.id} - ${synoptic}"
              chip.tag = synoptic
              chip.isChecked = synoptics.contains(synoptic)
              chip.setOnCheckedChangeListener(onCheckedListener)
-             chip_group_synoptic.addView(chip)
+             binding.chipGroupSynoptic.addView(chip)
              chipList.add(chip)
          }
 
          Log.d("fromLines", args.fromLines.toString())
          if(args.fromLines && synps.size>1){
-             text_hint_synoptic.visibility = View.VISIBLE
+             binding.textHintSynoptic.visibility = View.VISIBLE
          }else{
-             text_hint_synoptic.visibility = View.GONE
+             binding.textHintSynoptic.visibility = View.GONE
          }
      }
 
      private fun showError(){
-         recycler_stops.visibility = View.GONE
-         loading_stops.visibility = View.GONE
-         text_error.visibility = View.VISIBLE
+         binding.recyclerStops.visibility = View.GONE
+         binding.loadingStops.visibility = View.GONE
+         binding.textError.visibility = View.VISIBLE
 
      }
     private fun downloadRouteStops(route: Route, load_active:Boolean=true){
 
         this.route = route
 
-        loading_stops.indeterminateDrawable.setColorFilter(
+        binding.loadingStops.indeterminateDrawable.setColorFilter(
                 resources.getColor(R.color.tmp_murcia),
                 android.graphics.PorterDuff.Mode.SRC_IN);
 
 
 
-        loading_stops.visibility = View.VISIBLE
-        recycler_stops.visibility = View.GONE
+        binding.loadingStops.visibility = View.VISIBLE
+        binding.recyclerStops.visibility = View.GONE
 
         CoroutineScope(Dispatchers.IO).launch {
 
@@ -206,14 +222,16 @@ import kotlinx.coroutines.launch
 
                         if (routes != null) {
                             if(routes.isEmpty()){
-                                text_empty.visibility = View.VISIBLE
+                                binding.textEmpty.visibility = View.VISIBLE
                             }
                         }else{
-                            text_empty.visibility = View.VISIBLE
+                            binding.textEmpty.visibility = View.VISIBLE
                         }
                     }
                 }else{
-                    showError()
+                    requireActivity().runOnUiThread {
+                        showError()
+                    }
                 }
             }catch (e:Exception){
                 requireActivity().runOnUiThread {
@@ -231,10 +249,10 @@ import kotlinx.coroutines.launch
     private fun loadRouteStop(routes: List<StopRoute>, load_active: Boolean=true){
 
 
-        loading_stops.visibility = View.GONE
-        text_error.visibility = View.GONE
+        binding.loadingStops.visibility = View.GONE
+        binding.textError.visibility = View.GONE
 
-        recycler_stops.visibility = View.VISIBLE
+        binding.recyclerStops.visibility = View.VISIBLE
 
 
         this.stopRoutes = routes
@@ -250,6 +268,8 @@ import kotlinx.coroutines.launch
                 .filter { stopRoute ->  stopRoute.direction == route.getRealDirection()}
                 .filter { stopRoute ->  synoptics.contains(stopRoute.synoptic)}
 
+        Log.d("stops",sr
+            .flatMap { stopRoute -> stopRoute.stops }.toString())
         val stops = sr
                 .flatMap { stopRoute -> stopRoute.stops }
                 .groupingBy { it }
@@ -260,10 +280,10 @@ import kotlinx.coroutines.launch
                 .toList()
 
         if(sr.isNotEmpty()){
-            text_headsign.text = sr[0].headsign
-            text_headsign.visibility = View.VISIBLE
+            binding.textHeadsign.text = sr[0].headsign
+            binding.textHeadsign.visibility = View.VISIBLE
         }else{
-            text_headsign.visibility = View.GONE
+            binding.textHeadsign.visibility = View.GONE
         }
 
 
@@ -432,7 +452,7 @@ import kotlinx.coroutines.launch
 
 
 
-        val manager = recycler_stops.layoutManager as LinearLayoutManager
+        val manager = binding.recyclerStops.layoutManager as LinearLayoutManager
 
         //val dividerItemDecoration = DividerItemDecoration(recycler_stops.context, manager.orientation)
         //recycler_stops.addItemDecoration(dividerItemDecoration)

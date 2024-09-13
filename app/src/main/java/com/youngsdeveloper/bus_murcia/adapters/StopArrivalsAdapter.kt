@@ -15,8 +15,6 @@ import com.youngsdeveloper.bus_murcia.extensions.pluralize
 import com.youngsdeveloper.bus_murcia.models.ArrivalRealTime
 import com.youngsdeveloper.bus_murcia.models.Route
 import com.youngsdeveloper.bus_murcia.models.Stop
-import kotlinx.android.synthetic.main.item_arrival.view.*
-import kotlinx.android.synthetic.main.item_stop.view.*
 import kotlin.streams.toList
 
 class StopArrivalsAdapter(var items: List<ArrivalRealTime>): RecyclerView.Adapter<StopArrivalsViewHolder>() {
@@ -40,11 +38,14 @@ class StopArrivalsAdapter(var items: List<ArrivalRealTime>): RecyclerView.Adapte
 
         holder.text_route.text = "${arrival.route}-${arrival.synoptic}"
 
-        if(arrival.headsign.split("-> ").size>1){
-            holder.text_headsign.text = arrival.headsign.split("-> ")[1]
-        }else{
-            holder.text_headsign.text = arrival.headsign
+        arrival.headsign?.let {
+            if(arrival.headsign.split("-> ").size>1){
+                holder.text_headsign.text = arrival.headsign.split("-> ")[1]
+            }else{
+                holder.text_headsign.text = arrival.headsign
+            }
         }
+
 
 
 
@@ -80,10 +81,18 @@ class StopArrivalsAdapter(var items: List<ArrivalRealTime>): RecyclerView.Adapte
 
 
 class StopArrivalsViewHolder(val itemView: View): RecyclerView.ViewHolder(itemView){
-    val text_route:TextView = itemView.text_route
-    val text_headsign:TextView = itemView.text_headsign
-    val text_status:TextView = itemView.text_status
-    val text_next_bus_minutes:TextView = itemView.text_next_bus_minutes
+    val text_route:TextView
+    val text_headsign:TextView
+    val text_status:TextView
+    val text_next_bus_minutes:TextView
+
+    init {
+        text_route = itemView.findViewById(R.id.text_route)
+        text_headsign = itemView.findViewById(R.id.text_headsign)
+        text_status = itemView.findViewById(R.id.text_status)
+        text_next_bus_minutes = itemView.findViewById(R.id.text_next_bus_minutes)
+
+    }
 }
 
 

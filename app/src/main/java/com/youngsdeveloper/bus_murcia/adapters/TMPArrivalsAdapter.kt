@@ -20,7 +20,7 @@ class TMPArrivalsAdapter:IArrivalsAdapter {
 
         val lines = stop.lines
 
-        lines.forEach { line ->
+        lines?.forEach { line ->
 
 
             if(line.realtime!=null){

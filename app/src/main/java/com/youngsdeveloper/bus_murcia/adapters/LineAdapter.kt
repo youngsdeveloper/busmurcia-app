@@ -7,7 +7,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.youngsdeveloper.bus_murcia.R
 import com.youngsdeveloper.bus_murcia.models.Line
-import kotlinx.android.synthetic.main.item_line.view.*
 
 class LineAdapter(var items: List<Line>): RecyclerView.Adapter<LineViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LineViewHolder {
@@ -29,5 +28,9 @@ class LineAdapter(var items: List<Line>): RecyclerView.Adapter<LineViewHolder>()
 
 
 class LineViewHolder(val itemView: View): RecyclerView.ViewHolder(itemView){
-    val text_line: TextView = itemView.text_line
+    val text_line: TextView
+
+    init {
+        text_line = itemView.findViewById(R.id.text_line)
+    }
 }

@@ -4,11 +4,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.youngsdeveloper.bus_murcia.R
 import com.youngsdeveloper.bus_murcia.models.Route
 import com.youngsdeveloper.bus_murcia.models.Stop
-import kotlinx.android.synthetic.main.item_route.view.*
 
 class RouteAdapter(var items: List<Route>, var routeClickListener: RouteClickListener): RecyclerView.Adapter<RouteViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RouteViewHolder {
@@ -40,6 +40,11 @@ interface RouteClickListener {
 
 
 class RouteViewHolder(val itemView: View): RecyclerView.ViewHolder(itemView){
-    val text_route: TextView = itemView.text_route
-    val item_route_contaner = itemView.item_route_contaner
+    val text_route: TextView
+    val item_route_contaner: ConstraintLayout
+
+    init {
+        text_route = itemView.findViewById(R.id.text_route)
+        item_route_contaner = itemView.findViewById(R.id.item_route_contaner)
+    }
 }

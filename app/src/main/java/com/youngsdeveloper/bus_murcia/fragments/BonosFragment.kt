@@ -1,17 +1,38 @@
 package com.youngsdeveloper.bus_murcia.fragments
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.youngsdeveloper.bus_murcia.R
+import com.youngsdeveloper.bus_murcia.databinding.FragmentBonosBinding
+import de.codecrafters.tableview.TableDataAdapter
 import de.codecrafters.tableview.model.TableColumnWeightModel
 import de.codecrafters.tableview.toolkit.SimpleTableDataAdapter
 import de.codecrafters.tableview.toolkit.SimpleTableHeaderAdapter
-import kotlinx.android.synthetic.main.fragment_bonos.*
 
 
-class BonosFragment : Fragment(R.layout.fragment_bonos) {
+class BonosFragment : Fragment() {
 
+    private var _binding: FragmentBonosBinding? = null
+    private val binding get() = _binding!!
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentBonosBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
     private var SENCILLOS_DATA =
         arrayOf(
@@ -64,25 +85,25 @@ class BonosFragment : Fragment(R.layout.fragment_bonos) {
         columnModel.setColumnWeight(0, 4)
         columnModel.setColumnWeight(1, 2)
 
-        tableSencillos.columnModel = columnModel
-        tableSencillos.headerAdapter = SimpleTableHeaderAdapter(requireContext(), "Nombre", "Precio")
-        tableSencillos.dataAdapter = SimpleTableDataAdapter(requireContext(), SENCILLOS_DATA)
+        binding.tableSencillos.columnModel = columnModel
+        binding.tableSencillos.headerAdapter = SimpleTableHeaderAdapter(requireContext(), "Nombre", "Precio")
+        binding.tableSencillos.dataAdapter = SimpleTableDataAdapter(requireContext(), SENCILLOS_DATA) as TableDataAdapter<Any>
 
-        tableTricolorGeneral.columnModel = columnModel
-        tableTricolorGeneral.headerAdapter = SimpleTableHeaderAdapter(requireContext(), "Nombre", "Precio")
-        tableTricolorGeneral.dataAdapter = SimpleTableDataAdapter(requireContext(), TRICOLOR_DATA)
+        binding.tableTricolorGeneral.columnModel = columnModel
+        binding.tableTricolorGeneral.headerAdapter = SimpleTableHeaderAdapter(requireContext(), "Nombre", "Precio")
+        binding.tableTricolorGeneral.dataAdapter = SimpleTableDataAdapter(requireContext(), TRICOLOR_DATA) as TableDataAdapter<Any>
 
-        tableTricolorEstudiante.columnModel = columnModel
-        tableTricolorEstudiante.headerAdapter = SimpleTableHeaderAdapter(requireContext(), "Nombre", "Precio")
-        tableTricolorEstudiante.dataAdapter = SimpleTableDataAdapter(requireContext(), TRICOLOR_ESTUDIANTE_DATA)
+        binding.tableTricolorEstudiante.columnModel = columnModel
+        binding.tableTricolorEstudiante.headerAdapter = SimpleTableHeaderAdapter(requireContext(), "Nombre", "Precio")
+        binding.tableTricolorEstudiante.dataAdapter = SimpleTableDataAdapter(requireContext(), TRICOLOR_ESTUDIANTE_DATA) as TableDataAdapter<Any>
 
-        tableTricolorFamiliaNumerosa.columnModel = columnModel
-        tableTricolorFamiliaNumerosa.headerAdapter = SimpleTableHeaderAdapter(requireContext(), "Nombre", "Precio")
-        tableTricolorFamiliaNumerosa.dataAdapter = SimpleTableDataAdapter(requireContext(), TRICOLOR_FN_DATA)
+        binding.tableTricolorFamiliaNumerosa.columnModel = columnModel
+        binding.tableTricolorFamiliaNumerosa.headerAdapter = SimpleTableHeaderAdapter(requireContext(), "Nombre", "Precio")
+        binding.tableTricolorFamiliaNumerosa.dataAdapter = SimpleTableDataAdapter(requireContext(), TRICOLOR_FN_DATA) as TableDataAdapter<Any>
 
-        tableTricolorTranvia.columnModel = columnModel
-        tableTricolorTranvia.headerAdapter = SimpleTableHeaderAdapter(requireContext(), "Nombre", "Precio")
-        tableTricolorTranvia.dataAdapter = SimpleTableDataAdapter(requireContext(), TRICOLOR_TRANVIA_DATA)
+        binding.tableTricolorTranvia.columnModel = columnModel
+        binding.tableTricolorTranvia.headerAdapter = SimpleTableHeaderAdapter(requireContext(), "Nombre", "Precio")
+        binding.tableTricolorTranvia.dataAdapter = SimpleTableDataAdapter(requireContext(), TRICOLOR_TRANVIA_DATA) as TableDataAdapter<Any>
 
 
     }

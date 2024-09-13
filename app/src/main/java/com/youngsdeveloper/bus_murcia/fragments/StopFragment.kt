@@ -11,12 +11,11 @@ import com.youngsdeveloper.bus_murcia.adapters.IArrivalsAdapter
 import com.youngsdeveloper.bus_murcia.adapters.PanelTMPArrivalsAdapter
 import com.youngsdeveloper.bus_murcia.adapters.StopArrivalsAdapter
 import com.youngsdeveloper.bus_murcia.adapters.TMPArrivalsAdapter
+import com.youngsdeveloper.bus_murcia.databinding.FragmentStopBinding
 import com.youngsdeveloper.bus_murcia.io.ApiAdapter
 import com.youngsdeveloper.bus_murcia.models.PanelItem
 import com.youngsdeveloper.bus_murcia.models.RealTimeHour
 import com.youngsdeveloper.bus_murcia.models.Stop
-import kotlinx.android.synthetic.main.fragment_place.*
-import kotlinx.android.synthetic.main.fragment_stop.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,6 +26,24 @@ class StopFragment : Fragment(R.layout.fragment_stop) {
 
     val stop_arrrivals_adapter = StopArrivalsAdapter(mutableListOf())
 
+    private var _binding: FragmentStopBinding? = null
+    private val binding get() = _binding!!
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentStopBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,15 +66,15 @@ class StopFragment : Fragment(R.layout.fragment_stop) {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        text_parada.text = args.stopName
+        binding.textParada.text = args.stopName
 
         downloadStop()
     }
 
     private fun loadStop(s: Stop){
 
-        loading.visibility = View.GONE
-        recycler_llegadas.visibility = View.VISIBLE
+        binding.loading.visibility = View.GONE
+        binding.recyclerLlegadas.visibility = View.VISIBLE
 
 
         val IArrivalsAdapter = TMPArrivalsAdapter(s)
@@ -67,12 +84,12 @@ class StopFragment : Fragment(R.layout.fragment_stop) {
 
         stop_arrrivals_adapter.items = arrivals
 
-        recycler_llegadas.adapter = stop_arrrivals_adapter
+        binding.recyclerLlegadas.adapter = stop_arrrivals_adapter
 
         if(arrivals.size>0){
-            text_empty.visibility = View.GONE
+            binding.textEmpty.visibility = View.GONE
         }else{
-            text_empty.visibility = View.VISIBLE
+            binding.textEmpty.visibility = View.VISIBLE
         }
 
 
@@ -80,8 +97,8 @@ class StopFragment : Fragment(R.layout.fragment_stop) {
 
     private fun loadAlternativeStop(hours: List<RealTimeHour>){
 
-        loading.visibility = View.GONE
-        recycler_llegadas.visibility = View.VISIBLE
+        binding.loading.visibility = View.GONE
+        binding.recyclerLlegadas.visibility = View.VISIBLE
 
 
         val IArrivalsAdapter = AlternativeTMPArrivalsAdapter(hours)
@@ -91,19 +108,19 @@ class StopFragment : Fragment(R.layout.fragment_stop) {
 
         stop_arrrivals_adapter.items = arrivals
 
-        recycler_llegadas.adapter = stop_arrrivals_adapter
+        binding.recyclerLlegadas.adapter = stop_arrrivals_adapter
 
         if(arrivals.size>0){
-            text_empty.visibility = View.GONE
+            binding.textEmpty.visibility = View.GONE
         }else{
-            text_empty.visibility = View.VISIBLE
+            binding.textEmpty.visibility = View.VISIBLE
         }
     }
 
     private fun loadPanel(items: List<PanelItem>){
 
-        loading.visibility = View.GONE
-        recycler_llegadas.visibility = View.VISIBLE
+        binding.loading.visibility = View.GONE
+        binding.recyclerLlegadas.visibility = View.VISIBLE
 
 
         val panelTMPArrivalsAdapter = PanelTMPArrivalsAdapter(items)
@@ -111,15 +128,15 @@ class StopFragment : Fragment(R.layout.fragment_stop) {
 
         val arrivals = panelTMPArrivalsAdapter.getArrivalsRealTime()
 
-        stop_arrrivals_adapter.items = stop_arrrivals_adapter.items.plus(arrivals)
+        stop_arrrivals_adapter.items = arrivals
 
         stop_arrrivals_adapter.items = stop_arrrivals_adapter.items.sortedBy{it.minutes}
-        recycler_llegadas.adapter = stop_arrrivals_adapter
+        binding.recyclerLlegadas.adapter = stop_arrrivals_adapter
 
         if(arrivals.size>0){
-            text_empty.visibility = View.GONE
+            binding.textEmpty.visibility = View.GONE
         }else{
-            text_empty.visibility = View.VISIBLE
+            binding.textEmpty.visibility = View.VISIBLE
         }
     }
 
@@ -139,15 +156,15 @@ class StopFragment : Fragment(R.layout.fragment_stop) {
     }
     private fun downloadStop(){
 
-        recycler_llegadas.visibility = View.GONE
-        text_empty.visibility = View.GONE
-        text_error.visibility = View.GONE
+        binding.recyclerLlegadas.visibility = View.GONE
+        binding.textError.visibility = View.GONE
+        binding.textError.visibility = View.GONE
 
-        loading.indeterminateDrawable.setColorFilter(
+        binding.loading.indeterminateDrawable.setColorFilter(
             resources.getColor(R.color.tmp_murcia),
             android.graphics.PorterDuff.Mode.SRC_IN);
 
-        loading.visibility = View.VISIBLE
+        binding.loading.visibility = View.VISIBLE
 
         CoroutineScope(Dispatchers.IO).launch {
 
@@ -159,8 +176,8 @@ class StopFragment : Fragment(R.layout.fragment_stop) {
             }catch (e:Exception){
                 Log.e("error", e.localizedMessage)
                 requireActivity().runOnUiThread {
-                    loading.visibility = View.GONE
-                    text_error.visibility = View.VISIBLE
+                    binding.loading.visibility = View.GONE
+                    binding.textError.visibility = View.VISIBLE
                 }
             }
 

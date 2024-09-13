@@ -6,12 +6,17 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.youngsdeveloper.bus_murcia.R
+import com.youngsdeveloper.bus_murcia.databinding.ActivityMainBinding
+import com.youngsdeveloper.bus_murcia.databinding.ItemAlertBinding
 import com.youngsdeveloper.bus_murcia.models.Line
-import kotlinx.android.synthetic.main.item_alert.view.*
-import kotlinx.android.synthetic.main.item_line.view.*
 
 class AlertAdapter(var items: Map<String,String>): RecyclerView.Adapter<AlertViewHolder>() {
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlertViewHolder {
+
+
+
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_alert, parent, false)
         return AlertViewHolder(view)
@@ -36,8 +41,14 @@ class AlertAdapter(var items: Map<String,String>): RecyclerView.Adapter<AlertVie
 
 
 class AlertViewHolder(val itemView: View): RecyclerView.ViewHolder(itemView){
-    val text_alert: TextView = itemView.text_alert
-    val item_alert_contaner: View = itemView.item_alert_contaner
+    val text_alert: TextView
+    val item_alert_contaner: View
+
+    init{
+        text_alert = itemView.findViewById(R.id.text_alert)
+        item_alert_contaner = itemView.findViewById(R.id.item_alert_contaner)
+    }
+
 }
 
 public interface AlertClickListener{

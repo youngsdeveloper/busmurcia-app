@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.youngsdeveloper.bus_murcia.R
 import com.youngsdeveloper.bus_murcia.models.Place
-import kotlinx.android.synthetic.main.item_place.view.*
 
 class PlaceAdapter(var items: List<Place>): RecyclerView.Adapter<PlaceViewHolder>() {
 
@@ -48,5 +47,9 @@ interface PlaceClickListener {
 
 
 class PlaceViewHolder(val itemView: View): RecyclerView.ViewHolder(itemView){
-    val button_place:MaterialButton = itemView.text_headsign
+    val button_place:MaterialButton
+
+    init {
+        button_place = itemView.findViewById(R.id.text_headsign)
+    }
 }

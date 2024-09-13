@@ -13,24 +13,41 @@ import it.skrape.core.htmlDocument
 import it.skrape.selects.html5.img
 import it.skrape.selects.html5.table
 import it.skrape.selects.html5.tr
-import kotlinx.android.synthetic.main.fragment_alert.*
-import kotlinx.android.synthetic.main.fragment_route.*
-import kotlinx.android.synthetic.main.fragment_route.loading_realtime
 import java.lang.Float.max
 import java.lang.Float.min
 import java.net.URL
 import java.nio.charset.Charset
 import kotlin.concurrent.thread
 import com.bumptech.glide.request.target.Target
+import com.youngsdeveloper.bus_murcia.databinding.FragmentAlertBinding
 
 
-class AlertFragment : Fragment(R.layout.fragment_alert) {
+class AlertFragment : Fragment() {
 
+
+    private var _binding: FragmentAlertBinding? = null
+    private val binding get() = _binding!!
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentAlertBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        loading_realtime.indeterminateDrawable.setColorFilter(
+        binding.loadingRealtime.indeterminateDrawable.setColorFilter(
             resources.getColor(R.color.tmp_murcia),
             android.graphics.PorterDuff.Mode.SRC_IN);
 
@@ -54,17 +71,17 @@ class AlertFragment : Fragment(R.layout.fragment_alert) {
                     .listener(object : RequestListener<Drawable> {
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                             //TODO: something on exception
-                            loading_realtime.visibility = View.GONE
+                            binding.loadingRealtime.visibility = View.GONE
 
                             return false
                         }
                         override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                             //do something when picture already loaded
-                            loading_realtime.visibility = View.GONE
+                            binding.loadingRealtime.visibility = View.GONE
                             return false
                         }
                     })
-                    .into(image_alerta)
+                    .into(binding.imageAlerta)
             }
         }
     }

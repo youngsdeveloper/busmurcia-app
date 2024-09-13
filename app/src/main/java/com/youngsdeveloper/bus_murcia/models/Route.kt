@@ -2,17 +2,18 @@ package com.youngsdeveloper.bus_murcia.models
 
 import android.os.Parcelable
 import android.util.Log
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
+import java.io.Serializable
 import java.util.*
 import kotlin.math.abs
 
 @Parcelize
 data class Route(
     val id: Int,
-    val lines: List<Line> = mutableListOf(),
+    val lines: List<Line> = listOf(),
     val custom_headsign: String?,
     var direction: Int=1,
-): Parcelable{
+):Parcelable{
     fun getRouteNameForHumans():String{
         return "L$id - ${getRouteHeadsign()}"
     }
@@ -53,8 +54,8 @@ data class Route(
         return line_hours
     }
 
-    fun getRealTimeHours():List<RealTimeHour>{
-        val realtime = mutableListOf<RealTimeHour>();
+    fun getRealTimeHours():List<RealTimeHour?>{
+        val realtime = mutableListOf<RealTimeHour?>();
         for(line in lines){
             line.realtime?.let { r -> realtime.addAll(r) }
         }

@@ -2,11 +2,11 @@ package com.youngsdeveloper.bus_murcia.models
 
 import android.os.Parcel
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
+import java.io.Serializable
 
 private const val BUS_ADELANTADO = "adelantado"
 private const val BUS_RETRASADO = "retrasado"
-
 
 @Parcelize
 data class RealTimeHour(
@@ -18,9 +18,9 @@ data class RealTimeHour(
     val real_time: String,
     val origin_id: Int,
     val destination_id: Int,
-    val destination_name: String
+    val destination_name: String?
 
-) : Parcelable {
+):Parcelable{
 
     fun isAdelantado(): Boolean {
         return delay_string == BUS_ADELANTADO
@@ -33,4 +33,5 @@ data class RealTimeHour(
     fun isEnHora(): Boolean {
         return delay_minutes.toInt() == 0
     }
+
 }

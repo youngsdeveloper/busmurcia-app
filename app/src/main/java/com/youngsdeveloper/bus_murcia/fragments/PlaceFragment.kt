@@ -2,8 +2,10 @@ package com.youngsdeveloper.bus_murcia.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.Toast
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -13,11 +15,10 @@ import com.youngsdeveloper.bus_murcia.R
 import com.youngsdeveloper.bus_murcia.adapters.RouteClickListener
 import com.youngsdeveloper.bus_murcia.adapters.StopAdapter
 import com.youngsdeveloper.bus_murcia.adapters.StopOpenClickListener
+import com.youngsdeveloper.bus_murcia.databinding.FragmentPlaceBinding
 import com.youngsdeveloper.bus_murcia.io.ApiAdapter
 import com.youngsdeveloper.bus_murcia.models.Route
 import com.youngsdeveloper.bus_murcia.models.Stop
-import kotlinx.android.synthetic.main.fragment_place.*
-import kotlinx.android.synthetic.main.fragment_route.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,30 +28,42 @@ import java.util.*
 
 class PlaceFragment : Fragment(R.layout.fragment_place) {
 
-
+    private var _binding: FragmentPlaceBinding? = null
+    private val binding get() = _binding!!
 
     val args: PlaceFragmentArgs by navArgs()
 
     var global_stops : List<Stop>? = null
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentPlaceBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun showError(){
-        progressBar.visibility = View.GONE
-        textError.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.GONE
+        binding.textError.visibility = View.VISIBLE
     }
 
     private fun downloadPlace(){
 
         requireActivity().title = args.place.name
 
-        progressBar.indeterminateDrawable.setColorFilter(
+        binding.progressBar.indeterminateDrawable.setColorFilter(
                 resources.getColor(R.color.tmp_murcia),
                 android.graphics.PorterDuff.Mode.SRC_IN);
-        progressBar.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.VISIBLE
 
         CoroutineScope(Dispatchers.IO).launch {
             val place = args.place
@@ -91,8 +104,8 @@ class PlaceFragment : Fragment(R.layout.fragment_place) {
             requireActivity().title = args.place.name
         }
 
-        progressBar.visibility = View.GONE
-        textError.visibility = View.GONE
+        binding.progressBar.visibility = View.GONE
+        binding.textError.visibility = View.GONE
 
 
         val routeClickListener = object : RouteClickListener {
@@ -101,8 +114,19 @@ class PlaceFragment : Fragment(R.layout.fragment_place) {
 
                 s?.let { s ->
 
+                    Log.d("route",r.toString())
+                    Log.d("stop",s.toString())
+
                     val action = PlaceFragmentDirections.actionPlaceFragmentToRouteFragment(r, r.id.toString(), s, s.name)
-                    findNavController().navigate(action)
+
+                    val bundle = Bundle()
+                    bundle.putParcelable("route", r)
+                    bundle.putString("route_title", r.id.toString())
+                    bundle.putParcelable("stop", s)
+                    bundle.putString("stop_name", s.name)
+
+
+                    findNavController().navigate(com.youngsdeveloper.bus_murcia.R.id.action_placeFragment_to_routeFragment, bundle)
                 }
 
 
@@ -125,11 +149,11 @@ class PlaceFragment : Fragment(R.layout.fragment_place) {
 
         adapter.stopOpenClickListener = stopClickLineasFragment
 
-        recycler_stops.addItemDecoration(DividerItemDecoration(context, 0))
+        binding.recyclerStops.addItemDecoration(DividerItemDecoration(context, 0))
 
 
 
-        recycler_stops.adapter = adapter
+        binding.recyclerStops.adapter = adapter
 
 
         global_stops = stops

@@ -12,7 +12,6 @@ import com.google.android.material.button.MaterialButton
 import com.youngsdeveloper.bus_murcia.R
 import com.youngsdeveloper.bus_murcia.models.Route
 import com.youngsdeveloper.bus_murcia.models.Stop
-import kotlinx.android.synthetic.main.item_stop.view.*
 import kotlin.streams.toList
 
 class StopAdapter(var items: List<Stop>, var routeClickListener: RouteClickListener): RecyclerView.Adapter<StopViewHolder>() {
@@ -56,9 +55,16 @@ class StopAdapter(var items: List<Stop>, var routeClickListener: RouteClickListe
 
 
 class StopViewHolder(val itemView: View): RecyclerView.ViewHolder(itemView){
-    val text_parada:TextView = itemView.text_parada
-    val recycler_lines:RecyclerView= itemView.recycler_lines
-    val button_open:MaterialButton = itemView.button_open
+    val text_parada:TextView
+    val recycler_lines:RecyclerView
+    val button_open:MaterialButton
+
+    init {
+        text_parada = itemView.findViewById(R.id.text_parada)
+        recycler_lines = itemView.findViewById(R.id.recycler_lines)
+        button_open = itemView.findViewById(R.id.button_open)
+
+    }
 }
 
 

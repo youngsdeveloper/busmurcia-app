@@ -8,10 +8,12 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
@@ -26,11 +28,11 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.youngsdeveloper.bus_murcia.R
 import com.youngsdeveloper.bus_murcia.adapters.PlaceAdapter
 import com.youngsdeveloper.bus_murcia.adapters.PlaceClickListener
+import com.youngsdeveloper.bus_murcia.databinding.FragmentPlacesBinding
 import com.youngsdeveloper.bus_murcia.local.AppDatabase
 import com.youngsdeveloper.bus_murcia.local.toPlace
 import com.youngsdeveloper.bus_murcia.models.Place
 import io.nlopez.smartlocation.SmartLocation
-import kotlinx.android.synthetic.main.fragment_places.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -39,7 +41,24 @@ import kotlinx.coroutines.launch
 
 class PlacesFragment : Fragment(R.layout.fragment_places) {
 
+    private var _binding: FragmentPlacesBinding? = null
+    private val binding get() = _binding!!
 
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentPlacesBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
     private var fusedLocationProvider: FusedLocationProviderClient? = null
     private val locationRequest: LocationRequest = LocationRequest.create().apply {
         interval = 30
@@ -146,14 +165,14 @@ class PlacesFragment : Fragment(R.layout.fragment_places) {
 
         })
 
-        recycler_places.adapter = placesAdapter
+        binding.recyclerPlaces.adapter = placesAdapter
 
 
-        button_create_place.setOnClickListener {
+        binding.buttonCreatePlace.setOnClickListener {
             findNavController().navigate(R.id.action_placesFragment_to_newPlaceFragment)
         }
 
-        button_location.setOnClickListener {
+        binding.buttonLocation.setOnClickListener {
 
 
             checkLocationPermission()
@@ -184,8 +203,8 @@ class PlacesFragment : Fragment(R.layout.fragment_places) {
 
                 requireActivity().runOnUiThread {
 
-                    recycler_places.visibility = View.VISIBLE;
-                    text_empty.visibility = View.GONE;
+                    binding.recyclerPlaces.visibility = View.VISIBLE;
+                    binding.textEmpty.visibility = View.GONE;
 
                     placesAdapter.items =places.map { placeEntity -> placeEntity.toPlace() }
                     placesAdapter.notifyDataSetChanged()
@@ -193,7 +212,7 @@ class PlacesFragment : Fragment(R.layout.fragment_places) {
             }else{
 
                 requireActivity().runOnUiThread {
-                    text_empty.visibility = View.VISIBLE;
+                    binding.textEmpty.visibility = View.VISIBLE;
                 }
             }
 

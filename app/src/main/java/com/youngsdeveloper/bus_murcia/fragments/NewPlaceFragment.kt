@@ -5,7 +5,9 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -13,11 +15,11 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.youngsdeveloper.bus_murcia.R
+import com.youngsdeveloper.bus_murcia.databinding.FragmentNewPlaceBinding
 import com.youngsdeveloper.bus_murcia.local.AppDatabase
 import com.youngsdeveloper.bus_murcia.models.Place
 import com.youngsdeveloper.bus_murcia.models.toPlaceEntity
 import io.nlopez.smartlocation.SmartLocation
-import kotlinx.android.synthetic.main.fragment_new_place.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -43,11 +45,24 @@ class NewPlaceFragment : Fragment(R.layout.fragment_new_place) {
 
     private lateinit var appDatabase: AppDatabase
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+
+    private var _binding: FragmentNewPlaceBinding? = null
+    private val binding get() = _binding!!
 
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentNewPlaceBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+    }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -58,17 +73,18 @@ class NewPlaceFragment : Fragment(R.layout.fragment_new_place) {
 
         // Load Map
 
-        this.map_new_place = map
+        this.map_new_place = binding.map
+
 
         map_new_place.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE)
-        map.setMultiTouchControls(true)
+        binding.map.setMultiTouchControls(true)
 
-        val mapController = map.controller
+        val mapController = binding.map.controller
         mapController.setZoom(15.0)
 
-        val locationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(context), map);
+        val locationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(context), binding.map);
         locationOverlay.enableMyLocation();
-        map.overlays.add(locationOverlay)
+        binding.map.overlays.add(locationOverlay)
 
         var startPoint = GeoPoint(37.9901166, -1.1345895);
 
@@ -95,16 +111,16 @@ class NewPlaceFragment : Fragment(R.layout.fragment_new_place) {
 
 
                 location_picked?.let { location_picked ->
-                    location_picked.remove(map)
+                    location_picked.remove(binding.map)
                 }
 
-                val marker = Marker(map)
+                val marker = Marker(binding.map)
                 marker.position = p
                 marker.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_place_map)
                 marker.title = "Ubicación seleccionada"
                 marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
-                map.overlays.add(marker)
-                map.invalidate()
+                binding.map.overlays.add(marker)
+                binding.map.invalidate()
                 location_picked = marker
 
                 checkButtonCreatePlaceEnabled()
@@ -121,18 +137,18 @@ class NewPlaceFragment : Fragment(R.layout.fragment_new_place) {
         })
 
         val overlayEvents = MapEventsOverlay(mReceive);
-        map.overlays.add(overlayEvents);
+        binding.map.overlays.add(overlayEvents);
 
-        text_place_name.addTextChangedListener {
+        binding.textPlaceName.addTextChangedListener {
             checkButtonCreatePlaceEnabled()
         }
 
-        button_create_place.setOnClickListener {
+        binding.buttonCreatePlace.setOnClickListener {
             if(checkButtonCreatePlaceEnabled()){
 
                 CoroutineScope(Dispatchers.IO).launch {
 
-                    val place = Place(-1, text_place_name.text.toString(), location_picked?.position!!.latitude, location_picked?.position!!.longitude)
+                    val place = Place(-1, binding.textPlaceName.text.toString(), location_picked?.position!!.latitude, location_picked?.position!!.longitude)
                     appDatabase.placeDao()
                             .savePlace(place.toPlaceEntity())
 
@@ -146,8 +162,8 @@ class NewPlaceFragment : Fragment(R.layout.fragment_new_place) {
     }
 
     private fun checkButtonCreatePlaceEnabled():Boolean{
-        val check = location_picked!=null && (text_place_name.text?.isNotBlank() == true)
-        button_create_place.isEnabled = check
+        val check = location_picked!=null && (binding.textPlaceName.text?.isNotBlank() == true)
+        binding.buttonCreatePlace.isEnabled = check
         return check
 
     }

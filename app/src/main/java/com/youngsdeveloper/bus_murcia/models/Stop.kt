@@ -1,29 +1,38 @@
 package com.youngsdeveloper.bus_murcia.models
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Stop(
-    val id: Integer,
+    val id: Int,
     val name: String,
-    val lines: List<Line> = mutableListOf(),
+    val lines: List<Line>? = listOf(),
     val city: String?,
     val order: Int,
     val latitude: Double,
     val longitude: Double
 ):Parcelable{
-    fun getLinesByRoute():Map<Int, List<Line>>{
+    fun getLinesByRoute():Map<Int, List<Line>>?{
+        if(lines==null){
+            return null;
+        }
         return lines.groupBy { line -> line.route }
     }
 
-    fun getRoutesLabel():List<Int>{
+    fun getRoutesLabel():List<Int>?{
+        if(lines==null){
+            return null;
+        }
         return lines.map{line -> line.route}.distinct()
     }
 
     fun getRoutes():List<Route>{
         val routes = mutableListOf<Route>()
         val lines_by_route = getLinesByRoute()
+        if(lines_by_route==null){
+            return mutableListOf();
+        }
         if(lines_by_route.isEmpty()){
             return mutableListOf();
         }
@@ -32,21 +41,6 @@ data class Stop(
             routes.add(route)
         }
         return routes
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Stop
-
-        if (id != other.id) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return id.hashCode()
     }
 
 }

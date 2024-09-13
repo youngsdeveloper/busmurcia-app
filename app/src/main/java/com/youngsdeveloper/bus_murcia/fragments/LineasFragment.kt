@@ -1,18 +1,38 @@
 package com.youngsdeveloper.bus_murcia.fragments
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.youngsdeveloper.bus_murcia.R
 import com.youngsdeveloper.bus_murcia.adapters.RouteAdapter
 import com.youngsdeveloper.bus_murcia.adapters.RouteClickListener
+import com.youngsdeveloper.bus_murcia.databinding.FragmentLineasBinding
 import com.youngsdeveloper.bus_murcia.models.Route
 import com.youngsdeveloper.bus_murcia.models.Stop
-import kotlinx.android.synthetic.main.fragment_lineas.*
 
 class LineasFragment : Fragment(R.layout.fragment_lineas) {
 
+    private var _binding: FragmentLineasBinding? = null
+    private val binding get() = _binding!!
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentLineasBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
     private fun openRouteStops(r: Route){
 
 
@@ -64,7 +84,7 @@ class LineasFragment : Fragment(R.layout.fragment_lineas) {
         routes.add(Route(91, listOf(), "Sangonera la Seca — Javali Nuevo — Murcia"))
 
         val routeAdapter = RouteAdapter(routes, routeClickListener)
-        recycler_lineas.adapter = routeAdapter
+        binding.recyclerLineas.adapter = routeAdapter
 
     }
 }

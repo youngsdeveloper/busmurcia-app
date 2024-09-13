@@ -25,14 +25,13 @@ import com.youngsdeveloper.bus_murcia.R
 import com.youngsdeveloper.bus_murcia.adapters.HourAdapter
 import com.youngsdeveloper.bus_murcia.adapters.ITMPAdapter
 import com.youngsdeveloper.bus_murcia.adapters.TMPAdapter
+import com.youngsdeveloper.bus_murcia.databinding.FragmentRouteBinding
 import com.youngsdeveloper.bus_murcia.io.ApiAdapter
 import com.youngsdeveloper.bus_murcia.local.AppDatabase
 import com.youngsdeveloper.bus_murcia.models.Place
 import com.youngsdeveloper.bus_murcia.models.RealTimeHour
 import com.youngsdeveloper.bus_murcia.models.Route
 import com.youngsdeveloper.bus_murcia.models.toPlaceEntity
-import kotlinx.android.synthetic.main.fragment_new_place.*
-import kotlinx.android.synthetic.main.fragment_route.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -58,6 +57,25 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
     var synoptics = mutableListOf<String>()
 
 
+    private var _binding: FragmentRouteBinding? = null
+    private val binding get() = _binding!!
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentRouteBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private val updateRealtimeTask = object : Runnable {
         override fun run() {
             downloadLocalRealTimeData()
@@ -74,7 +92,7 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
     }
 
 
-    private lateinit var realtime_hours: List<RealTimeHour>
+    private var realtime_hours: List<RealTimeHour?>?  = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,13 +108,6 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
     }
 
-    override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View? {
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
@@ -133,11 +144,14 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
         //Crea el adaptador de horas
         hours_adapter = HourAdapter(mutableListOf())
-        recycler_hours.adapter = hours_adapter
+        binding.recyclerHours.adapter = hours_adapter
 
 
         // Initializa real time hours
-        this.realtime_hours = args.route.getRealTimeHours()
+        val hours = args.route.getRealTimeHours()
+        hours.let {
+            this.realtime_hours = hours
+        }
 
 
 
@@ -151,8 +165,8 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
     private fun loadRoute(route: Route){
 
-        text_route_number.text = "L${route.id}"
-        text_route_headsign.text = "${route.getRouteHeadsign()}"
+        binding.textRouteNumber.text = "L${route.id}"
+        binding.textRouteHeadsign.text = "${route.getRouteHeadsign()}"
 
         loadSynoptic(route)
         updateHours()
@@ -163,10 +177,10 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
                 RecyclerView.VERTICAL,
                 false
         ).apply {
-            recycler_hours.layoutManager = this
+            binding.recyclerHours.layoutManager = this
         }
 
-        switch_full_hours.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.switchFullHours.setOnCheckedChangeListener { buttonView, isChecked ->
             updateHours()
         }
 
@@ -200,14 +214,14 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
         for(synoptic in route.getSynopticInRoute()){
             val chip = layoutInflater.inflate(
                     R.layout.layout_chip_choice,
-                    chip_group_synoptic,
+                    binding.chipGroupSynoptic,
                     false
             ) as Chip
             chip.text = "L${route.id} - ${synoptic}"
             chip.tag = synoptic
             chip.isChecked = synoptics.contains(synoptic)
             chip.setOnCheckedChangeListener(onCheckedListener)
-            chip_group_synoptic.addView(chip)
+            binding.chipGroupSynoptic.addView(chip)
             chipList.add(chip)
         }
 
@@ -217,10 +231,10 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
 
     private fun showError(){
-        loading_realtime.visibility = View.GONE;
-        text_status_next_bus.visibility = View.VISIBLE
+        binding.loadingRealtime.visibility = View.GONE;
+        binding.textStatusNextBus.visibility = View.VISIBLE
 
-        text_status_next_bus.text = "Error al conectar con el servicio de TMP Murcia.\n\nVuelva a intentarlo más tarde."
+        binding.textStatusNextBus.text = "Error al conectar con el servicio de TMP Murcia.\n\nVuelva a intentarlo más tarde."
 
         mainHandler.removeCallbacks(updateRealtimeTask) //
         mainHandler.removeCallbacks(updateRealtimeRemoteTask) //
@@ -233,12 +247,12 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
         }
 
 
-        text_next_bus.visibility = View.GONE
-        text_status_next_bus.visibility = View.GONE
-        text_next_bus_line.visibility = View.GONE
+        binding.textNextBus.visibility = View.GONE
+        binding.textStatusNextBus.visibility = View.GONE
+        binding.textNextBusLine.visibility = View.GONE
 
-        loading_realtime.visibility = View.VISIBLE;
-        loading_realtime.indeterminateDrawable.setColorFilter(
+        binding.loadingRealtime.visibility = View.VISIBLE;
+        binding.loadingRealtime.indeterminateDrawable.setColorFilter(
                 resources.getColor(R.color.tmp_murcia),
                 android.graphics.PorterDuff.Mode.SRC_IN);
 
@@ -286,20 +300,22 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
         loadRealTimeData(realtime_hours)
     }
 
-    private fun loadRealTimeData(realtime_hours: List<RealTimeHour>){
+    private fun loadRealTimeData(realtime_hours: List<RealTimeHour?>?){
 
-        if(loading_realtime==null){
+        if(binding.loadingRealtime==null){
             return;
         }
 
 
-        loading_realtime.visibility = View.GONE;
+        binding.loadingRealtime.visibility = View.GONE;
 
         this.realtime_hours = realtime_hours
 
 
 
-        tmpAdapter.realtime_hours = realtime_hours
+        realtime_hours?.let {
+            tmpAdapter.realtime_hours = (realtime_hours as List<RealTimeHour>?)!!
+        }
 
 
 
@@ -307,24 +323,24 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
 
 
-        text_next_bus_line.text = realTimeData.linea_cabecera
-        text_status_next_bus.text = realTimeData.status
-        text_next_bus.text = realTimeData.llegada_estimada
+        binding.textNextBusLine.text = realTimeData.linea_cabecera
+        binding.textStatusNextBus.text = realTimeData.status
+        binding.textNextBus.text = realTimeData.llegada_estimada
 
-        text_status_next_bus.setTextColor(ContextCompat.getColor(requireContext(), realTimeData.status_color))
+        binding.textStatusNextBus.setTextColor(ContextCompat.getColor(requireContext(), realTimeData.status_color))
 
-        text_status_next_bus.visibility = View.VISIBLE
+        binding.textStatusNextBus.visibility = View.VISIBLE
 
         if(realTimeData.linea_cabecera.isEmpty()){
-            text_next_bus_line.visibility = View.GONE
+            binding.textNextBusLine.visibility = View.GONE
         }else{
-            text_next_bus_line.visibility = View.VISIBLE
+            binding.textNextBusLine.visibility = View.VISIBLE
         }
 
         if(realTimeData.llegada_estimada.isEmpty()){
-            text_next_bus.visibility = View.GONE
+            binding.textNextBus.visibility = View.GONE
         }else{
-            text_next_bus.visibility = View.VISIBLE
+            binding.textNextBus.visibility = View.VISIBLE
         }
     }
 
@@ -334,7 +350,7 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
         var hours = tmpAdapter.getNextHours()
 
-        if(switch_full_hours.isChecked){
+        if(binding.switchFullHours.isChecked){
             hours = tmpAdapter.getFullHours()
         }
 

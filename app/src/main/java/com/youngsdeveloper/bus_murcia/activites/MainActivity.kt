@@ -15,16 +15,22 @@ import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.badge.BadgeDrawable
 import com.youngsdeveloper.bus_murcia.R
-import kotlinx.android.synthetic.main.activity_main.*
+import com.youngsdeveloper.bus_murcia.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
 
         setTheme(R.style.Theme_BusMurciaApp)
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
 
         val navHostFragment =
@@ -32,19 +38,19 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
 
         val appBarConfiguration = AppBarConfiguration(setOf(R.id.placesFragment, R.id.bonosFragment, R.id.lineasFragment, R.id.ultimaHoraFragment))
-        topAppBar.setupWithNavController(navController, appBarConfiguration)
-        setSupportActionBar(topAppBar)
+        binding.topAppBar.setupWithNavController(navController, appBarConfiguration)
+        setSupportActionBar(binding.topAppBar)
 
 
-        topAppBar.setNavigationOnClickListener {
-            if (navController.graph.startDestination == navController.currentDestination?.id) {
+        binding.topAppBar.setNavigationOnClickListener {
+            if (navController.graph.startDestinationId == navController.currentDestination?.id) {
                 finish()
             } else {
                 navController.navigateUp()
             }
         }
 
-        val bottom_navigation = bottomNavigationView
+        val bottom_navigation = binding.bottomNavigationView
         bottom_navigation.setupWithNavController(navController)
 
         val badge_bonos = bottom_navigation.getOrCreateBadge(R.id.bonosFragment)
@@ -55,7 +61,7 @@ class MainActivity : AppCompatActivity() {
 
         badge_bonos.isVisible = !prefs.getBoolean("has_seen_bonos", false)
 
-        bottomNavigationView.setOnNavigationItemSelectedListener {
+        binding.bottomNavigationView.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.bonosFragment -> {
                     if(badge_bonos.isVisible){

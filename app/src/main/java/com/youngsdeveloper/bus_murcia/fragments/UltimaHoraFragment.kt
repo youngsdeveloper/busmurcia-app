@@ -1,6 +1,7 @@
 package com.youngsdeveloper.bus_murcia.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.youngsdeveloper.bus_murcia.R
 import com.youngsdeveloper.bus_murcia.adapters.AlertAdapter
 import com.youngsdeveloper.bus_murcia.adapters.AlertClickListener
+import com.youngsdeveloper.bus_murcia.databinding.FragmentUltimaHoraBinding
 import it.skrape.core.htmlDocument
 import it.skrape.fetcher.*
 import it.skrape.fetcher.request.UrlBuilder
@@ -20,9 +22,6 @@ import it.skrape.selects.html5.a
 import it.skrape.selects.html5.table
 import it.skrape.selects.html5.td
 import it.skrape.selects.html5.tr
-import kotlinx.android.synthetic.main.fragment_route.*
-import kotlinx.android.synthetic.main.fragment_route.loading_realtime
-import kotlinx.android.synthetic.main.fragment_ultima_hora.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -33,9 +32,27 @@ import kotlin.concurrent.thread
 class UltimaHoraFragment : Fragment(R.layout.fragment_ultima_hora) {
 
 
+    private var _binding: FragmentUltimaHoraBinding? = null
+    private val binding get() = _binding!!
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentUltimaHoraBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        loading_realtime.indeterminateDrawable.setColorFilter(
+        binding.loadingRealtime.indeterminateDrawable.setColorFilter(
             resources.getColor(R.color.tmp_murcia),
             android.graphics.PorterDuff.Mode.SRC_IN);
 
@@ -48,15 +65,17 @@ class UltimaHoraFragment : Fragment(R.layout.fragment_ultima_hora) {
         thread {
 
             try {
-                val source = URL("http://tmpmurcia.es/ultima.asp").readText(Charset.forName("ISO-8859-1"))
+                val source = URL("https://tmpmurcia.es/ultima.asp").readText(Charset.forName("ISO-8859-1"))
+                Log.d("src",source)
                 val avisosMap = parseHTML(source)
                 requireActivity().runOnUiThread {
                     setupUI(avisosMap)
                 }
             }catch (e:Exception){
+                Log.e("ultimaHora",e.message.toString())
                 requireActivity().runOnUiThread {
-                    loading_realtime.visibility = View.GONE
-                    textError.visibility = View.VISIBLE
+                    binding.loadingRealtime.visibility = View.GONE
+                    binding.textError.visibility = View.VISIBLE
 
                 }
             }
@@ -67,7 +86,7 @@ class UltimaHoraFragment : Fragment(R.layout.fragment_ultima_hora) {
 
     private fun setupUI(avisosMap:Map<String,String> ){
 
-        loading_realtime.visibility = View.GONE
+        binding.loadingRealtime.visibility = View.GONE
 
         val alertAdapter = AlertAdapter(avisosMap)
 
@@ -79,7 +98,7 @@ class UltimaHoraFragment : Fragment(R.layout.fragment_ultima_hora) {
 
         }
 
-        recycler_alertas.adapter = alertAdapter
+        binding.recyclerAlertas.adapter = alertAdapter
 
 
 

@@ -2,7 +2,7 @@ package com.youngsdeveloper.bus_murcia.models
 
 import android.os.Parcelable
 import android.util.Log
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.util.*
 import kotlin.math.abs
 
@@ -14,9 +14,9 @@ data class Line(
     val synoptic: String,
     val headsign: String,
     val hours: List<String>,
-    var realtime: MutableList<RealTimeHour>?,
+    var realtime: List<RealTimeHour?>?,
     var direction: Int=-1
-): Parcelable{
+):Parcelable{
     fun getHumanLineName():String{
         return "$route$synoptic"
     }

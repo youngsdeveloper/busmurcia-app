@@ -5,6 +5,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -15,7 +16,6 @@ import com.youngsdeveloper.bus_murcia.R
 import com.youngsdeveloper.bus_murcia.extensions.dp
 import com.youngsdeveloper.bus_murcia.models.Route
 import com.youngsdeveloper.bus_murcia.models.Stop
-import kotlinx.android.synthetic.main.item_stop_route.view.*
 
 
 class StopRouteAdapter(var items: List<Stop>, var context: Context): RecyclerView.Adapter<StopRouteViewHolder>() {
@@ -79,6 +79,7 @@ class StopRouteAdapter(var items: List<Stop>, var context: Context): RecyclerVie
             holder.text_next_bus_minutes.visibility = View.GONE
             holder.loading_realtime_stop.visibility = View.GONE
         }
+
 
 
         if(statusStops.containsKey(stop.id) && active_item_position==position){
@@ -197,14 +198,23 @@ interface StopRealtimeListener {
 
 
 class StopRouteViewHolder(val itemView: View): RecyclerView.ViewHolder(itemView){
-    val text_stop:MaterialTextView = itemView.text_headsign
-    val text_location:MaterialTextView = itemView.text_status
-    val text_next_bus_minutes:MaterialTextView = itemView.text_next_bus_minutes
 
-    val loading_realtime_stop:ProgressBar = itemView.loading_realtime_stop
+    val text_stop:MaterialTextView
+    val text_location:MaterialTextView
+    val text_next_bus_minutes:MaterialTextView
+    val loading_realtime_stop:ProgressBar
+    val image_mark:ImageView
+    val container:View
 
-    val image_mark = itemView.image_mark
 
-    val container:View = itemView.item_stop_route_container
+    init {
+        text_stop = itemView.findViewById(R.id.text_headsign)
+        text_location = itemView.findViewById(R.id.text_status)
+        text_next_bus_minutes = itemView.findViewById(R.id.text_next_bus_minutes)
+        loading_realtime_stop = itemView.findViewById(R.id.loading_realtime_stop)
+        image_mark = itemView.findViewById(R.id.image_mark)
+        container = itemView.findViewById(R.id.item_stop_route_container)
+
+    }
 
 }

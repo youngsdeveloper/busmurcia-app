@@ -7,7 +7,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.youngsdeveloper.bus_murcia.R
 import com.youngsdeveloper.bus_murcia.models.Hour
-import kotlinx.android.synthetic.main.item_hour.view.*
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
@@ -32,5 +31,9 @@ class HourAdapter(var items: List<Hour>): RecyclerView.Adapter<HourViewHolder>()
 
 
 class HourViewHolder(val itemView: View): RecyclerView.ViewHolder(itemView){
-    val text_hour:TextView = itemView.text_hour
+    val text_hour:TextView
+
+    init{
+        text_hour = itemView.findViewById(R.id.text_hour)
+    }
 }

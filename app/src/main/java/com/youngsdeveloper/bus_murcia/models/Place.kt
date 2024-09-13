@@ -2,7 +2,7 @@ package com.youngsdeveloper.bus_murcia.models
 
 import android.os.Parcelable
 import com.youngsdeveloper.bus_murcia.local.PlaceEntity
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Place(
